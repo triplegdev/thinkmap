@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 from app.models import User, db
 from app.forms import LoginForm
 from app.forms import SignUpForm
@@ -51,13 +51,17 @@ def sign_up():
     Creates a new user and logs them in
     """
     form = SignUpForm()
+
+    photos = current_app.config['UPLOADS_DEFAULT_SET']
+    filename = "avatar.png"
+
     form['csrf_token'].data = request.cookies['csrf_token']
     if form.validate_on_submit():
         user = User(
             username=form.data['username'],
             email=form.data['email'],
             password=form.data['password'],
-            avatar=os.path.join(Config.REUPLOADED_FOLDER, 'avatar.png')
+            avatar=photos.path(filename)
         )
         db.session.add(user)
         db.session.commit()
