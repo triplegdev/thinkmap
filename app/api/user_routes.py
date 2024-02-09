@@ -58,4 +58,4 @@ def user(id):
             db.session.commit()
             return user.to_dict()
 
-        return form.errors, 400
+        return form.errors, 401
