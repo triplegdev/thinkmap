@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, current_app
 from flask_login import login_required, current_user
 from app.forms import AccountForm
-from app.models import User, db
+from app.models import User, Flowchart, db
 
 user_routes = Blueprint('users', __name__)
 
@@ -14,6 +14,20 @@ def users():
     """
     users = User.query.all()
     return {'users': [user.to_dict() for user in users]}
+
+
+@user_routes.route('/<int:id>/flowcharts')
+@login_required
+def user_flowcharts(id):
+
+    user = User.query.get(id)
+
+    if not user:
+        return 'User Not Found', 404
+
+    flowcharts = user.flowcharts
+
+    return {'flowcharts': [flowchart.to_dict() for flowchart in flowcharts]}
 
 
 @user_routes.route('/<int:id>', methods=['GET', 'PUT'])
@@ -40,9 +54,8 @@ def user(id):
             user.username = form.username.data
             user.email = form.email.data
             filename = photos.save(request.files['avatar'])
-            # print('////////filename///////', photos.path(filename))
             user.avatar = photos.path(filename)
             db.session.commit()
             return user.to_dict()
 
-        return form.errors, 400
+        return form.errors, 401
