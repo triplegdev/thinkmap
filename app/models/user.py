@@ -15,10 +15,12 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
     avatar = db.Column(db.String(255))
+    # session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     flowcharts = db.relationship("Flowchart", back_populates='user', cascade="all, delete-orphan")
+    # sessions = db.relationship('Session', back_populates='user')
 
     @property
     def password(self):
