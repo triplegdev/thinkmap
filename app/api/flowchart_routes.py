@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from flask_login import login_required, current_user
 from app.forms import FlowchartForm, TitleExistsError
 from app.models import Flowchart, db
@@ -12,6 +12,10 @@ flowchart_routes = Blueprint('flowcharts', __name__)
 def edit_or_delete_flowchart(id):
 
     flowchart = Flowchart.query.get(id)
+
+    if not flowchart:
+        return {"error": "flowchart not found"}, 404
+
     if flowchart.user_id != int(current_user.get_id()):
         return {"error": "Unauthorized"}, 401
 
@@ -22,7 +26,6 @@ def edit_or_delete_flowchart(id):
         return {"message": "Flowchart deleted successfully"}
 
     if request.method == 'PUT':
-
         form = FlowchartForm()
         form['csrf_token'].data = request.cookies['csrf_token']
 

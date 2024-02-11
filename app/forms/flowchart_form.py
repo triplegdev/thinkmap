@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from flask_login import current_user
 from wtforms import StringField
-from wtforms.validators import DataRequired, Email, ValidationError
-from app.models import User, Flowchart
+from wtforms.validators import DataRequired, ValidationError
+from app.models import User
 
 
 class FlowchartForm(FlaskForm):

@@ -8,6 +8,7 @@ from flask_uploads import IMAGES, UploadSet, configure_uploads
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
 from .api.flowchart_routes import flowchart_routes
+from .api.symbol_routes import symbol_routes
 from .models import db, User
 from .seeds import seed_commands
 from .config import Config
@@ -37,6 +38,7 @@ configure_uploads(app, photos)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
 app.register_blueprint(flowchart_routes, url_prefix='/api/flowcharts')
+app.register_blueprint(symbol_routes, url_prefix='/api/flowcharts/<int:flowchart_id>/symbols')
 db.init_app(app)
 Migrate(app, db)
 

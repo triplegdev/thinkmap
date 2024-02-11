@@ -4,24 +4,22 @@ from flask_login import UserMixin
 from datetime import datetime
 
 
-class Flowchart(db.Model, UserMixin):
-    __tablename__ = 'flowcharts'
+class Session(db.Model, UserMixin):
+    __tablename__ = 'sessions'
 
     if environment == "production":
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')))
-    title = db.Column(db.String(40), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    user = db.relationship("User", back_populates='flowcharts')
-    # session = db.relationship('Session', back_populates='flowchart')
-    symbols = db.relationship('Symbol', back_populates='flowchart', cascade="all, delete-orphan")
+    user = db.relationship('User', back_populates='sessions')
+    flowchart = db.relationship("Flowchart", back_populates='session', cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
             'id': self.id,
-            'title': self.title
+            'user_id': self.user_id
         }
