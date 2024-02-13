@@ -21,5 +21,7 @@ class Arrow(db.Model, UserMixin):
 
     def to_dict(self):
         return {
-            'id': self.id
+            'id': self.id,
+            'symbol_from_id': self.symbol_from_id,
+            'symbol_to_id': self.symbol_to_id
         }
