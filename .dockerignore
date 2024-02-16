@@ -1,1 +1,7 @@
-._*
+**/._*
+instance/*
+instance
+node_modules
+.venv
+dev.db
+.gitignore
