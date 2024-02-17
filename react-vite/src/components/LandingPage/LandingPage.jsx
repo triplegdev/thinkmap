@@ -1,7 +1,10 @@
+import Grid from "../Grid/Grid";
 import './LandingPage.css';
 
 const LandingPage = () => {
     return (
+        <>
+        <Grid />
         <div id="landing">
             <h1 id="landing__logo">
                 <span id="landing__logo-think">
@@ -15,6 +18,7 @@ const LandingPage = () => {
             </h1>
             <button id="landing__button">Create</button>
         </div>
+        </>
     )
 }
 
