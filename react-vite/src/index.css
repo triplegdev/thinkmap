@@ -1,1 +1,8 @@
 /* TODO: Add sitewide styles */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-family: "Geologica", sans-serif;
+}
