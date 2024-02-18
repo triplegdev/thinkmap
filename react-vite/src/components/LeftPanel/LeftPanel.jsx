@@ -4,7 +4,7 @@ const LeftPanel = ({ onSelectShape }) => {
     };
 
     return (
-        <div className="main__panel">
+        <div className="leftpanel">
             <button onClick={() => handleClick('circle')}>Circle</button>
             <button onClick={() => handleClick('square')}>Diamond</button>
             <button onClick={() => handleClick('square')}>Square</button>

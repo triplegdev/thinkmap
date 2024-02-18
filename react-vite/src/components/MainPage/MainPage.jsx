@@ -1,17 +1,30 @@
-import { useState } from 'react';
+// import { useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { thunkLogout } from "../../redux/session";
 
 const MainPage = () => {
-    const [selectedShape, setSelectedShape] = useState(null);
+    // const user = useSelector((store) => store.session.user);
+    const dispatch = useDispatch();
+    // const [selectedShape, setSelectedShape] = useState(null);
 
-    const handleSelectShape = (shape) => {
-      setSelectedShape(shape);
+    // const handleSelectShape = (shape) => {
+    //   setSelectedShape(shape);
+    // };
+
+    const logout = (e) => {
+        e.preventDefault();
+        dispatch(thunkLogout());
     };
 
     return (
-      <div>
-        <LeftPanel onSelectShape={handleSelectShape} />
-        <Grid selectedShape={selectedShape} />
-      </div>
+        <>
+            <h1>Hello from MainPage</h1>
+            <button onClick={logout}>Log Out</button>
+        </>
+    //   <div>
+    //     <LeftPanel onSelectShape={handleSelectShape} />
+    //     <Grid selectedShape={selectedShape} />
+    //   </div>
     );
   };
 

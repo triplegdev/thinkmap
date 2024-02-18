@@ -1,7 +1,10 @@
 import Grid from "../Grid/Grid";
+import OpenModalButton from "../OpenModalButton";
+import LoginFormModal from "../LoginFormModal";
 import './LandingPage.css';
 
 const LandingPage = () => {
+
     return (
         <>
         <Grid />
@@ -16,7 +19,11 @@ const LandingPage = () => {
                 </span>
                 <span id="map">map</span>
             </h1>
-            <button id="landing__button">Create</button>
+            <OpenModalButton
+              buttonText="Create"
+              modalComponent={<LoginFormModal />}
+              buttonClass="landing__button"
+            />
         </div>
         </>
     )
