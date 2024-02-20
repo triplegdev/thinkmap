@@ -47,7 +47,12 @@ const Grid = ({ selectedShape }) => {
     };
   }, []);
 
-  return <canvas id="grid" ref={canvasRef} />;
+  return (
+    <>
+        <canvas id="grid" ref={canvasRef} />
+        {selectedShape && <div>selectedShape</div>}
+    </>
+  );
 };
 
 export default Grid;

@@ -61,7 +61,7 @@ def user(id):
             user.username = form.username.data
             user.email = form.email.data
             filename = photos.save(request.files['avatar'])
-            user.avatar = photos.path(filename)
+            user.avatar = "/img/" + filename
             db.session.commit()
             return user.to_dict()
 

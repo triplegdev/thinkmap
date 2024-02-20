@@ -34,6 +34,10 @@
     padding: 3px 10px;
 }
 
+.login__form p {
+    color: #ffb8b8;
+}
+
 .login__icon-input {
     align-items: center;
     display: flex;
