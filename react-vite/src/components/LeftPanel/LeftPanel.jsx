@@ -1,20 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
 import { thunkLogout } from "../../redux/session";
+import { editFlowchart } from "../../redux/flowcharts";
 import './LeftPanel.css';
 
 
-const LeftPanel = ({ onSelectShape, flowchartTitle, user }) => {
+const LeftPanel = ({ onSelectShape, flowchart, user, title, onCreate }) => {
     const dispatch = useDispatch();
-    const [title, setTitle] = useState(flowchartTitle);
+    const [localTitle, setLocalTitle] = useState('');
 
-    // useEffect(() => {
-
-    // })
+    useEffect(() => {
+        setLocalTitle(title);
+    }, [title]);
 
     const handleSubmit = e => {
         e.preventDefault();
+
+        const payload = { title: localTitle }
+
+        dispatch(editFlowchart(payload, flowchart.id));
     }
 
     const handleClick = (shape) => {
@@ -31,10 +36,11 @@ const LeftPanel = ({ onSelectShape, flowchartTitle, user }) => {
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
+                    value={localTitle}
+                    onChange={e => setLocalTitle(e.target.value)}
                 />
             </form>
+            <button onClick={onCreate}>+</button>
             <button onClick={() => handleClick('terminal')}>Terminal</button>
             <button onClick={() => handleClick('decision')}>Decision</button>
             <button onClick={() => handleClick('process')}>Process</button>
