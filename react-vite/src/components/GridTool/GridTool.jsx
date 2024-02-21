@@ -1,8 +1,11 @@
+// import { useState } from 'react';
 import { useRef, useEffect } from 'react';
+import Symbol from '../Symbol/Symbol';
 import './GridTool.css'
 
-const GridTool = ({ selectedShape }) => {
+const GridTool = ({ selectedShape, symbols }) => {
   const canvasRef = useRef(null);
+//   const [fSymbols, setFSymbols] = useState(symbols);
 
   useEffect(() => {
         const canvas = canvasRef.current;
@@ -16,6 +19,15 @@ const GridTool = ({ selectedShape }) => {
         canvas.width = parentWidth // Set canvas width to match container width
         canvas.height = innerHeight; // Set canvas height to match container height
         drawGrid();
+        if (!Object.values(symbols).length) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid();
+        }
+        else {
+            Object.values(symbols).forEach(({ type, x_position, y_position }) => {
+                Symbol.draw(ctx, type, x_position, y_position); // Call draw method of Symbol component
+            });
+        }
     };
 
     // Function to draw the grid
@@ -40,6 +52,8 @@ const GridTool = ({ selectedShape }) => {
         ctx.stroke();
     };
 
+
+
     resizeCanvas(); // Call resizeCanvas initially
     window.addEventListener('resize', resizeCanvas); // Add event listener for window resize
 
@@ -47,7 +61,7 @@ const GridTool = ({ selectedShape }) => {
     return () => {
         window.removeEventListener('resize', resizeCanvas);
     };
-  }, []);
+  }, [symbols]);
 
   return (
     <>
