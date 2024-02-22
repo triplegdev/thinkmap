@@ -4,7 +4,7 @@ import DeleteFlowchartModal from '../DeleteFlowchartModal/DeleteFlowchartModal';
 import OpenModalButton from '../OpenModalButton/OpenModalButton';
 import './RightPanel.css';
 
-const RightPanel = ({ isVisible, onClose, flowcharts, onDeleteFlowchart }) => {
+const RightPanel = ({ isVisible, onClose, flowcharts, onDeleteFlowchart, onSelectFlowchart }) => {
     const [hoveredItemId, setHoveredItemId] = useState(null);
 
     const handleMouseEnter = (flowchart) => {
@@ -25,7 +25,7 @@ const RightPanel = ({ isVisible, onClose, flowcharts, onDeleteFlowchart }) => {
             <h1>Flowcharts</h1>
             <ul className="rightpanel__flowcharts">
             {Object.values(flowcharts).map((flowchart) => (
-                <li key={flowchart.id} onMouseEnter={() => handleMouseEnter(flowchart)} onMouseLeave={handleMouseLeave}>
+                <li key={flowchart.id} onClick={() => onSelectFlowchart(flowchart)} onMouseEnter={() => handleMouseEnter(flowchart)} onMouseLeave={handleMouseLeave}>
                     {flowchart.title}
                     <OpenModalButton
                         buttonText={<TbTrash />}

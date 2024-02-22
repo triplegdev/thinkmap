@@ -19,7 +19,7 @@ const MainPage = () => {
     const [flowchart, setFlowchart] = useState({});
     const [selectedShape, setSelectedShape] = useState(null);
     const [rightPanelVisible, setRightPanelVisible] = useState(true);
-    const [title, setTitle] = useState('');
+    // const [title, setTitle] = useState('');
 
     useEffect(() => {
         dispatch(getFlowchartsThunk(user.id)).then(data => {
@@ -27,12 +27,12 @@ const MainPage = () => {
                 dispatch(createFlowchart()).then(data => {
                     setIsLoaded(true);
                     setFlowchart(data);
-                    setTitle(data.title);
+                    // setTitle(data.title);
                 })
             }
             else {
                 setFlowchart(data.flowcharts[0]);
-                setTitle(data.flowcharts[0].title);
+                // setTitle(data.flowcharts[0].title);
                 dispatch(getSymbolsThunk(data.flowcharts[0].id)).then(() => {
                     setIsLoaded(true);
                 });
@@ -40,9 +40,17 @@ const MainPage = () => {
         });
     }, [dispatch, user.id]);
 
+
     const handleSelectShape = shape => {
       setSelectedShape(shape);
     };
+
+    const handleSelectFlowchart = (selectedFlowchart) => {
+        // console.log(selectedFlowchart)
+        // console.log(selectedFlowchart.title, 'clicked')
+        setFlowchart(selectedFlowchart);
+        dispatch(getSymbolsThunk(selectedFlowchart.id));
+    }
 
     const toggleRightPanel = () => {
         setRightPanelVisible(prevState => !prevState);
@@ -50,14 +58,18 @@ const MainPage = () => {
 
     const handleDeleteFlowchart = (flowchartId) => {
         dispatch(deleteFlowchart(flowchartId)).then(() => {
-            setTitle(flowchart.title);
-            dispatch(getSymbolsThunk(flowchart.id));
+            // setTitle(flowchart.title);
+            const lastUpadatedFlowchart = Object.values(flowcharts)[0];
+            console.log(lastUpadatedFlowchart)
+            setFlowchart(lastUpadatedFlowchart);
+            dispatch(getSymbolsThunk(lastUpadatedFlowchart.id));
         });
     };
 
     const handleCreateFlowchart = () => {
         dispatch(createFlowchart()).then(data => {
-            setTitle(data.title);
+            // setTitle(data.title);
+            setFlowchart(data)
             dispatch(getSymbolsThunk(data.id));
         });
     }
@@ -71,7 +83,7 @@ const MainPage = () => {
                 onSelectShape={handleSelectShape}
                 flowchart={flowchart}
                 user={user}
-                title={title}
+                // title={title}
                 onCreate={handleCreateFlowchart}
             />
             <GridTool selectedShape={selectedShape} symbols={symbols} />
@@ -80,6 +92,7 @@ const MainPage = () => {
                 onClose={toggleRightPanel}
                 flowcharts={flowcharts}
                 onDeleteFlowchart={handleDeleteFlowchart}
+                onSelectFlowchart={handleSelectFlowchart}
             />
         </div>
     );

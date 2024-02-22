@@ -6,13 +6,13 @@ import { editFlowchart } from "../../redux/flowcharts";
 import './LeftPanel.css';
 
 
-const LeftPanel = ({ onSelectShape, flowchart, user, title, onCreate }) => {
+const LeftPanel = ({ onSelectShape, flowchart, user, onCreate }) => {
     const dispatch = useDispatch();
-    const [localTitle, setLocalTitle] = useState('');
+    const [localTitle, setLocalTitle] = useState(flowchart.title);
 
     useEffect(() => {
-        setLocalTitle(title);
-    }, [title]);
+        setLocalTitle(flowchart.title);
+    }, [flowchart.title]);
 
     const handleSubmit = e => {
         e.preventDefault();

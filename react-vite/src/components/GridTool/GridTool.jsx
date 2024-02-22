@@ -24,8 +24,8 @@ const GridTool = ({ selectedShape, symbols }) => {
             drawGrid();
         }
         else {
-            Object.values(symbols).forEach(({ type, x_position, y_position }) => {
-                Symbol.draw(ctx, type, x_position, y_position); // Call draw method of Symbol component
+            Object.values(symbols).forEach(({ type, x_position, y_position, text }) => {
+                Symbol.draw(ctx, type, x_position, y_position, text); // Call draw method of Symbol component
             });
         }
     };

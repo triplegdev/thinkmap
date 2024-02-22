@@ -1,5 +1,5 @@
 const Symbol = {
-  draw: (ctx, type, x, y) => {
+  draw: (ctx, type, x, y, text) => {
     switch (type) {
       case 'Terminal':
         ctx.beginPath();
@@ -34,6 +34,11 @@ const Symbol = {
       default:
         break;
     }
+
+    ctx.fillStyle = 'black';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(text, x, y + 5);
   }
 };
 
