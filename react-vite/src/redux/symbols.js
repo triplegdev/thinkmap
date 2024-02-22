@@ -1,7 +1,7 @@
 const GET_SYMBOLS = 'flowcharts/GET_SYMBOLS';
 const ADD_SYMBOL = 'flowcharts/ADD_SYMBOL';
-const EDIT_SYMBOL = 'flowcharts/EDIT_SYMBOL';
-const DELETE_SYMBOL = 'flowcharts/DELETE_SYMBOL';
+// const EDIT_SYMBOL = 'flowcharts/EDIT_SYMBOL';
+// const DELETE_SYMBOL = 'flowcharts/DELETE_SYMBOL';
 
 const getSymbols = (symbols) => ({
     type: GET_SYMBOLS,
@@ -14,8 +14,8 @@ const addSymbol = symbol => ({
 });
 
 
-export const createSymbol = (payload, flowchartId, symbolId) => async dispatch => {
-    const res = await fetch(`/api/flowcharts/${flowchartId}/symbols/${symbolId}`, {
+export const createSymbol = (payload, flowchartId) => async dispatch => {
+    const res = await fetch(`/api/flowcharts/${flowchartId}/symbols/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

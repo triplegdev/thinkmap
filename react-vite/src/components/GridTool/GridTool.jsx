@@ -14,7 +14,6 @@ const GridTool = ({ selectedShape, symbols }) => {
     // Function to resize canvas to match window size
     const resizeCanvas = () => {
         const parentWidth = canvas.parentNode.clientWidth; // Get the width of the parent container
-        console.log('parent', parentWidth);
         const { innerHeight } = window;
         canvas.width = parentWidth // Set canvas width to match container width
         canvas.height = innerHeight; // Set canvas height to match container height

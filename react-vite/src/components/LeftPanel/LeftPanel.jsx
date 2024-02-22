@@ -6,7 +6,7 @@ import { editFlowchart } from "../../redux/flowcharts";
 import './LeftPanel.css';
 
 
-const LeftPanel = ({ onSelectShape, flowchart, user, onCreate }) => {
+const LeftPanel = ({ /*onSelectShape,*/ flowchart, user, onCreateFlowchart, onCreateSymbol }) => {
     const dispatch = useDispatch();
     const [localTitle, setLocalTitle] = useState(flowchart.title);
 
@@ -22,8 +22,14 @@ const LeftPanel = ({ onSelectShape, flowchart, user, onCreate }) => {
         dispatch(editFlowchart(payload, flowchart.id));
     }
 
-    const handleClick = (shape) => {
-        onSelectShape(shape);
+    const createSymbolClick = type => {
+        const symbol = {
+            x_position: window.innerWidth / 2,
+            y_position: window.innerHeight / 2,
+            type,
+            text: ''
+        }
+        onCreateSymbol(symbol);
     };
 
     const logout = (e) => {
@@ -40,11 +46,11 @@ const LeftPanel = ({ onSelectShape, flowchart, user, onCreate }) => {
                     onChange={e => setLocalTitle(e.target.value)}
                 />
             </form>
-            <button onClick={onCreate}>+</button>
-            <button onClick={() => handleClick('terminal')}>Terminal</button>
-            <button onClick={() => handleClick('decision')}>Decision</button>
-            <button onClick={() => handleClick('process')}>Process</button>
-            <button onClick={() => handleClick('data')}>Data</button>
+            <button onClick={onCreateFlowchart}>+</button>
+            <button onClick={() => createSymbolClick('Terminal')}>Terminal</button>
+            <button onClick={() => createSymbolClick('Decision')}>Decision</button>
+            <button onClick={() => createSymbolClick('Process')}>Process</button>
+            <button onClick={() => createSymbolClick('Data')}>Data</button>
             <img id="leftpanel__img" src={user.avatar} alt="" />
             <h2 id="leftpanel__user">{user.username}</h2>
             <Link to="/account">My Account</Link>
