@@ -1,7 +1,7 @@
-const GET_SYMBOLS = 'flowcharts/GET_SYMBOLS';
-const ADD_SYMBOL = 'flowcharts/ADD_SYMBOL';
-// const EDIT_SYMBOL = 'flowcharts/EDIT_SYMBOL';
-// const DELETE_SYMBOL = 'flowcharts/DELETE_SYMBOL';
+const GET_SYMBOLS = 'symbol/GET_SYMBOLS';
+const ADD_SYMBOL = 'symbol/ADD_SYMBOL';
+const EDIT_SYMBOL = 'symbol/EDIT_SYMBOL';
+const DELETE_SYMBOL = 'flowcharts/DELETE_SYMBOL';
 
 const getSymbols = (symbols) => ({
     type: GET_SYMBOLS,
@@ -12,6 +12,54 @@ const addSymbol = symbol => ({
     type: ADD_SYMBOL,
     symbol
 });
+
+const updateSymbol = symbol => ({
+    type: EDIT_SYMBOL,
+    symbol
+});
+
+const removeSymbol = symbolId => ({
+    type: DELETE_SYMBOL,
+    symbolId
+});
+
+
+export const deleteSymbol = (flowchartId, symbolId) => async dispatch => {
+    const res = await fetch(`/api/flowcharts/${flowchartId}/symbols/${symbolId}`, {
+        method: "DELETE"
+    });
+
+    if (res.ok) {
+        const data = await res.json();
+        dispatch(removeSymbol(symbolId));
+        return data;
+    } else if (res.status < 500) {
+        const errorMessages = await res.json();
+        return errorMessages
+    } else {
+        return { server: "Something went wrong. Please try again" }
+    }
+}
+
+
+export const editSymbol = (payload, flowchartId, symbolId) => async dispatch => {
+    const res = await fetch(`/api/flowcharts/${flowchartId}/symbols/${symbolId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+        const data = await res.json();
+        dispatch(updateSymbol(data));
+        return data;
+    } else if (res.status < 500) {
+        const errorMessages = await res.json();
+        return errorMessages
+    } else {
+        return { server: "Something went wrong. Please try again" }
+    }
+}
 
 
 export const createSymbol = (payload, flowchartId) => async dispatch => {
@@ -60,15 +108,15 @@ const symbolsReducer = (state = {}, action) => {
             }, {});
             return { ...symbols };
         }
-        // case EDIT_FLOWCHART: {
-        //     return { ...state, [action.flowchart.id]: action.flowchart };
-        // }
-        // case DELETE_FLOWCHART: {
-        //     const { flowchartId } = action
-        //     const newState = { ...state };
-        //     delete newState[flowchartId];
-        //     return newState;
-        // }
+        case EDIT_SYMBOL: {
+            return { ...state, [action.symbol.id]: action.symbol };
+        }
+        case DELETE_SYMBOL: {
+            const { symbolId } = action
+            const newState = { ...state };
+            delete newState[symbolId];
+            return newState;
+        }
         default:
             return state;
     }
