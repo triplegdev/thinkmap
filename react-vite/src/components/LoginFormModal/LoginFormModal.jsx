@@ -32,6 +32,17 @@ function LoginFormModal() {
     }
   };
 
+  const handleDemoLogin = async (e) => {
+    e.preventDefault();
+    const payload = { email: 'demo@aa.io', password: 'password' };
+    const data = await dispatch(thunkLogin(payload));
+    if (data) {
+      setErrors(data);
+    } else {
+        closeModal()
+    }
+  };
+
   return (
     <>
       <form className="login__form" onSubmit={handleSubmit}>
@@ -66,7 +77,7 @@ function LoginFormModal() {
           </div>
         </label>
         {errors.password && <p>{errors.password}</p>}
-        <button type="submit">Log In</button>
+        <button className="login__button" type="submit">Log In</button>
         <div className="login__signup">
           <div>Don&apos;t have an account?</div>
           <div>
@@ -78,6 +89,7 @@ function LoginFormModal() {
             />
           </div>
         </div>
+        <button className="login__button-demo" onClick={handleDemoLogin}>Log in as Demo User</button>
       </form>
     </>
   );

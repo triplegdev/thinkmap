@@ -22,7 +22,7 @@ const RightPanel = ({ isVisible, onClose, flowcharts, onDeleteFlowchart, onSelec
     return (
         <>
         <div className={`rightpanel ${isVisible ? 'visible' : 'hidden'}`}>
-            <h1>Flowcharts</h1>
+            <h2>Flowcharts</h2>
             <ul className="rightpanel__flowcharts">
             {Object.values(flowcharts).map((flowchart) => (
                 <li key={flowchart.id} onClick={() => onSelectFlowchart(flowchart)} onMouseEnter={() => handleMouseEnter(flowchart)} onMouseLeave={handleMouseLeave}>
