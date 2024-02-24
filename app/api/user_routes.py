@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request, current_app
 from flask_login import login_required, current_user
 from app.forms import AccountForm
 from app.models import User, Flowchart, db
+from sqlalchemy import desc
 
 user_routes = Blueprint('users', __name__)
 
@@ -25,7 +26,13 @@ def user_flowcharts(id):
     if not user:
         return 'User Not Found', 404
 
-    flowcharts = user.flowcharts
+    """
+        Query for users flowcharts and order by recently updated
+    """
+    flowcharts = db.session.query(Flowchart) \
+                           .filter_by(user_id=user.id) \
+                           .order_by(desc(Flowchart.updated_at)) \
+                           .all()
 
     return {'flowcharts': [flowchart.to_dict() for flowchart in flowcharts]}
 
@@ -54,7 +61,7 @@ def user(id):
             user.username = form.username.data
             user.email = form.email.data
             filename = photos.save(request.files['avatar'])
-            user.avatar = photos.path(filename)
+            user.avatar = "/img/" + filename
             db.session.commit()
             return user.to_dict()
 

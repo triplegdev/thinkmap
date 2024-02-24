@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, jsonify, request, session, redirect
 from flask_login import login_required, current_user
 from app.forms import FlowchartForm, TitleExistsError
 from app.models import Flowchart, db
@@ -53,7 +53,6 @@ def edit_or_delete_flowchart(id):
 @flowchart_routes.route('/', methods=['POST'])
 @login_required
 def create_flowchart():
-
     form = FlowchartForm()
     form['title'].data = 'Untitled'
     form['csrf_token'].data = request.cookies['csrf_token']

@@ -30,4 +30,5 @@ class Symbol(db.Model, UserMixin):
             'x_position': self.x_position,
             'y_position': self.y_position,
             'text': self.text
+            # 'flowchart_id': self.flowchart_id
         }

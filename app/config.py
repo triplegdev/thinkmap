@@ -12,4 +12,4 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL').replace('postgres://', 'postgresql://')
     SQLALCHEMY_ECHO = True
-    UPLOADED_PHOTOS_DEST = 'static/uploads'
+    UPLOADED_PHOTOS_DEST = 'react-vite/public/img'
