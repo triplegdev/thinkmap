@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import './Grid.css'
 
-const Grid = ({ selectedShape }) => {
+const Grid = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const Grid = ({ selectedShape }) => {
     };
   }, []);
 
-  return <canvas id="grid" ref={canvasRef} />;
+  return  <canvas id="grid" ref={canvasRef} />;
 };
 
 export default Grid;

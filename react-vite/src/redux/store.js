@@ -6,9 +6,13 @@ import {
 } from "redux";
 import thunk from "redux-thunk";
 import sessionReducer from "./session";
+import flowchartsReducer from "./flowcharts";
+import symbolsReducer from "./symbols";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
+  flowcharts: flowchartsReducer,
+  symbols: symbolsReducer
 });
 
 let enhancer;

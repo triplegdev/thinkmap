@@ -34,6 +34,10 @@
     padding: 3px 10px;
 }
 
+.login__form p {
+    color: #ffb8b8;
+}
+
 .login__icon-input {
     align-items: center;
     display: flex;
@@ -54,15 +58,26 @@
     outline: none;
 }
 
-.login__form button {
-    background-color: #C4E8FC;
+.login__button,
+.login__button-demo {
     border-radius: 3px;
     border: none;
     cursor: pointer;
+    font-family: "Geologica", sans-serif;
+    font-weight: 300;
     margin-top: 20px;
     padding: 12px 20px;
     width: 100%;
 }
+
+.login__button {
+    background-color: #C4E8FC;
+}
+
+.login__button-demo {
+    background-color: #B3E0B7;
+}
+
 
 .login__signup {
     color: white;

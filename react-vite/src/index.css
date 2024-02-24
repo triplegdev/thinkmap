@@ -5,6 +5,7 @@ body {
     padding: 0;
     border: none;
     font-family: "Geologica", sans-serif;
+    overflow: hidden;
 }
 
 #modal-content {
