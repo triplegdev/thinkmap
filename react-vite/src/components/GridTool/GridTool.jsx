@@ -1,236 +1,132 @@
-import { useRef, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useRef, useEffect } from 'react';
+import { fabric } from 'fabric';
 import Symbol from '../Symbol/Symbol';
 import './GridTool.css'
 
-const SYMBOL_SIZE = 150;
 
 const GridTool = ({ symbols, onEditSymbol, onDeleteSymbol }) => {
   const canvasRef = useRef(null);
-  const dispatch = useDispatch();
-  const [dragging, setDragging] = useState(false);
-  const [draggedSymbol, setDraggedSymbol] = useState(null);
-  const [offsetX, setOffsetX] = useState(0);
-  const [offsetY, setOffsetY] = useState(0);
-  const [selectedSymbol, setSelectedSymbol] = useState(null);
   const symbolsArr = Object.values(symbols);
-
-  const symbolBoundsCheck = (symbol, mouseX, mouseY) => {
-    switch (symbol.type) {
-        case 'Terminal':
-          return (
-            mouseX >= symbol.x_position - SYMBOL_SIZE / 2 &&
-            mouseX <= symbol.x_position + SYMBOL_SIZE / 2 &&
-            mouseY >= symbol.y_position - SYMBOL_SIZE / 4 &&
-            mouseY <= symbol.y_position + SYMBOL_SIZE / 4
-          );
-        case 'Decision':
-          return (
-            mouseX >= symbol.x_position - SYMBOL_SIZE / 1.75 &&
-            mouseX <= symbol.x_position + SYMBOL_SIZE / 1.75 &&
-            mouseY >= symbol.y_position - SYMBOL_SIZE / 3 &&
-            mouseY <= symbol.y_position + SYMBOL_SIZE / 3
-          );
-        case 'Process':
-          return (
-            mouseX >= symbol.x_position - SYMBOL_SIZE / 2 &&
-            mouseX <= symbol.x_position + SYMBOL_SIZE / 2 &&
-            mouseY >= symbol.y_position - SYMBOL_SIZE / 4 &&
-            mouseY <= symbol.y_position + SYMBOL_SIZE / 4
-          );
-        case 'Data':
-          return (
-            mouseX >= symbol.x_position - SYMBOL_SIZE / 2 &&
-            mouseX <= symbol.x_position + SYMBOL_SIZE / 1.33 &&
-            mouseY >= symbol.y_position - SYMBOL_SIZE / 4 &&
-            mouseY <= symbol.y_position + SYMBOL_SIZE / 4
-          );
-        default:
-          return false;
-      }
-}
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-
-    const drawSelectedSymbol = (ctx, type, x, y) => {
-        switch (type) {
-            case 'Terminal':
-                ctx.ellipse(x, y, SYMBOL_SIZE / 2, SYMBOL_SIZE / 4, 0, 0, Math.PI * 2);
-                ctx.stroke();
-                break;
-            case 'Decision':
-                ctx.beginPath();
-                ctx.moveTo(x, y - SYMBOL_SIZE / 3);
-                ctx.lineTo(x + SYMBOL_SIZE / 1.75, y);
-                ctx.lineTo(x, y + SYMBOL_SIZE / 3);
-                ctx.lineTo(x - SYMBOL_SIZE / 1.75, y);
-                ctx.closePath();
-                ctx.stroke();
-                break;
-            case 'Process':
-                ctx.strokeRect(x - SYMBOL_SIZE / 2, y - SYMBOL_SIZE / 4, SYMBOL_SIZE, SYMBOL_SIZE / 2);
-                break;
-            case 'Data':
-                ctx.beginPath();
-                ctx.moveTo(x - SYMBOL_SIZE / 2, y - SYMBOL_SIZE / 4);
-                ctx.lineTo(x + SYMBOL_SIZE / 2, y - SYMBOL_SIZE / 4);
-                ctx.lineTo(x + SYMBOL_SIZE / 1.33, y + SYMBOL_SIZE / 4);
-                ctx.lineTo(x - SYMBOL_SIZE / 4, y + SYMBOL_SIZE / 4);
-                ctx.closePath();
-                ctx.stroke();
-                break;
-            default:
-                break;
-        }
-    }
+        const canvas = new fabric.Canvas(canvasRef.current);
 
     const resizeCanvas = () => {
-        const clientWidth = canvas.clientWidth;
-        const { innerHeight } = window;
-        canvas.width = clientWidth
-        canvas.height = innerHeight;
+
+        // clear existing objects before redrawing
+        canvas.clear();
+        canvas.setWidth(window.innerWidth);
+        canvas.setHeight(window.innerHeight);
+        // // redraw the grid and symbols
         drawGrid();
         drawSymbols();
     };
 
 
     const drawGrid = () => {
+        canvas.setBackgroundColor('#DCF2FF');
         const gridSize = 10;
-        const { width, height } = canvas;
 
-        ctx.fillStyle = '#DCF2FF';
-        ctx.fillRect(0, 0, width, height); // rectangle covering the entire canvas
+        const width = canvas.getWidth();
+        const height = canvas.getHeight();
 
-        ctx.beginPath();
-        for (let x = 0; x < width; x += gridSize) {
-            ctx.moveTo(x + 0.5, 0); /// adjustment for linewidth
-            ctx.lineTo(x + 0.5, height);
+        const lines = [];
+
+        // Horizontal lines
+        for (let i = 0; i <= Math.ceil(height / gridSize); i++) {
+        const y = i * gridSize;
+        lines.push(new fabric.Line([0, y, width, y], {
+            stroke: '#8ed2ff',
+            strokeWidth: 0.5,
+            selectable: false,
+            hasControls: false
+        }));
         }
-        for (let y = 0; y < height; y += gridSize) {
-            ctx.moveTo(0, y + 0.5); // adjustment for linewidth
-            ctx.lineTo(width, y + 0.5);
+
+        // Vertical lines
+        for (let i = 0; i <= Math.ceil(width / gridSize); i++) {
+        const x = i * gridSize;
+        lines.push(new fabric.Line([x, 0, x, height], {
+            stroke: '#8ed2ff',
+            strokeWidth: 0.5,
+            selectable: false,
+            hasControls: false
+        }));
         }
-        ctx.strokeStyle = '#8ed2ff';
-        ctx.lineWidth = 0.5; // make lines appear thinner
-        ctx.stroke();
-    };
+
+        const gridGroup = new fabric.Group(lines, {
+            left: 0,
+            top: 0,
+            selectable: false,
+            hasControls: false
+        });
+
+        canvas.add(gridGroup);
+        canvas.renderAll();
+    }
+
 
     const drawSymbols = () => {
-        if (!symbolsArr.length) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawGrid();
+        symbolsArr.forEach(({ id, type, x_position, y_position, text }) => {
+            Symbol.draw(canvas, id, type, x_position, y_position, text, onEditSymbol);
+        });
+    }
+
+
+    const handleKeyDown = (e, activeObject) => {
+        if (activeObject && activeObject.type !== 'textbox' && ['Delete', 'Backspace', 'Del', 'Forward Delete'].includes(e.key)) {
+            e.preventDefault();
+
+            onDeleteSymbol(activeObject.id);
         }
-        else {
-            symbolsArr.forEach(({ id, type, x_position, y_position, text }) => {
-                Symbol.draw(ctx, type, x_position, y_position, text);
+    }
 
-                if (selectedSymbol && selectedSymbol.id === id) {
-                    ctx.strokeStyle = 'yellow';
-                    ctx.lineWidth = 4;
+    let keyDownEvent;
 
-                    drawSelectedSymbol(ctx, type, x_position, y_position);
-                }
+    const handleSelection = () => {
+        const activeObject = canvas.getActiveObject(); // get the currently active object
+        if (activeObject) {
+            document.removeEventListener('keydown', keyDownEvent);
+            keyDownEvent = e => handleKeyDown(e, activeObject);
+            document.addEventListener('keydown', keyDownEvent);
+        } else {
+            document.removeEventListener('keydown', keyDownEvent);
+        }
+    };
 
-            });
+    const handleMoveSymbol = () => {
+        const activeObject = canvas.getActiveObject();
+        if (activeObject) {
+            const { x, y } = activeObject.getCenterPoint();
+            const textObj = activeObject.getObjects().find(obj => obj.type === 'textbox');
+            const payload = {
+                x_position: x,
+                y_position: y,
+                text: textObj.text,
+                type: activeObject.symbolType
+            }
+            onEditSymbol(payload, activeObject.id);
         }
     }
 
 
-    const handleMouseDown = e => {
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-
-        const clickedSymbol = symbolsArr.find(symbol => symbolBoundsCheck(symbol, mouseX, mouseY));
-
-        if (clickedSymbol) {
-            setDragging(true);
-            setDraggedSymbol(clickedSymbol);
-            setOffsetX(mouseX - clickedSymbol.x_position);
-            setOffsetY(mouseY - clickedSymbol.y_position);
-            setSelectedSymbol(clickedSymbol);
-        }
-        else setSelectedSymbol(null);
-
-    };
-
-    const handleMouseMove = e => {
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-
-        if (dragging && draggedSymbol) {
-          draggedSymbol.x_position = mouseX - offsetX;
-          draggedSymbol.y_position = mouseY - offsetY;
-
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          drawGrid();
-          drawSymbols();
-        }
-
-        if (dragging) {
-            document.body.style.cursor = 'grabbing';
-          }
-        else {
-
-            const isOverSymbol = symbolsArr.some(symbol => symbolBoundsCheck(symbol, mouseX, mouseY));
-
-            document.body.style.cursor = isOverSymbol ? 'grab' : 'auto';
-        }
-    };
-
-
-    const handleMouseUp = () => {
-        setDragging(false);
-        setDraggedSymbol(null);
-
-        if (draggedSymbol) {
-            const payload = {
-                x_position: draggedSymbol.x_position,
-                y_position: draggedSymbol.y_position,
-                text: draggedSymbol.text,
-                type: draggedSymbol.type
-            }
-            onEditSymbol(payload, draggedSymbol.id);
-        }
-    };
-
-    const handleKeyDown = e => {
-        // check if the delete key is pressed
-        if (
-            (e.key === 'Delete' ||
-            e.key === 'Backspace' ||
-            e.key === 'Del' ||
-            e.key === 'Forward Delete')
-            && selectedSymbol
-        ) {
-            // console.log('deleted')
-            onDeleteSymbol(selectedSymbol.id);
-        }
-    };
-
-    // canvas.addEventListener('dblclick', handleDoubleClick);
-    canvas.addEventListener('keydown', handleKeyDown);
-    canvas.addEventListener('mousedown', handleMouseDown);
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseup', handleMouseUp);
-
     resizeCanvas(); // call resizeCanvas initially
     window.addEventListener('resize', resizeCanvas); // add event listener for window resize
+    canvas.on('selection:created', handleSelection);
+    canvas.on('selection:updated', handleSelection);
+    canvas.on('object:modified', handleMoveSymbol);
 
-    // cleanup function
+    // // cleanup function
     return () => {
+        canvas.dispose();
         window.removeEventListener('resize', resizeCanvas);
-        canvas.removeEventListener('mousedown', handleMouseDown);
-        canvas.removeEventListener('mousemove', handleMouseMove);
-        canvas.removeEventListener('mouseup', handleMouseUp);
-        canvas.removeEventListener('keydown', handleKeyDown);
-        // canvas.removeEventListener('dblclick', handleDoubleClick);
+        canvas.off('selection:created', handleSelection);
+        canvas.off('selection:updated', handleSelection);
+        document.removeEventListener('keydown', keyDownEvent);
+        canvas.off('object:modified', handleMoveSymbol);
     };
-  }, [dispatch, symbols, dragging, draggedSymbol, selectedSymbol]);
+  }, [symbols]);
 
 
   // tabindex so deletion via keydown is contained within canvas
