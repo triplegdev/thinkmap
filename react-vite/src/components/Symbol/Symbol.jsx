@@ -103,14 +103,17 @@ const Symbol = {
 
       textObj.width = SYMBOL_SIZE
 
+
       const group = new fabric.Group([shape, textObj], {
         left: shape.left,
         top: shape.top,
         originX: 'center',
         originY: 'center',
         id,
-        symbolType: type
+        symbolType: type,
+        hasControls: false
       });
+
 
       group.on('mousedblclick', () => {
         // textForEditing is temporary obj,
