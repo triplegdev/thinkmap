@@ -1,4 +1,5 @@
 import { fabric } from 'fabric';
+import ConnectionPoint from '../ConnectionPoint/ConnectionPoint';
 const SYMBOL_SIZE = 150;
 
 const Symbol = {
@@ -6,6 +7,8 @@ const Symbol = {
     let shape;
     let textObj;
     let points;
+    let connections = [];
+    let pointOffset = 2.5;
       switch (type) {
         case 'Terminal':
           shape = new fabric.Ellipse({
@@ -14,10 +17,12 @@ const Symbol = {
               rx: SYMBOL_SIZE / 2,
               ry: SYMBOL_SIZE / 4,
               fill: '#E2937B',
+              originX: 'center',
+              originY: 'center',
           });
           textObj = new fabric.Textbox(text, {
-            left: x + SYMBOL_SIZE / 2,
-            top: y + SYMBOL_SIZE / 4,
+            left: x,
+            top: y,
             originX: 'center',
             originY: 'center',
             fill: 'black',
@@ -27,6 +32,13 @@ const Symbol = {
             textBaseline: 'middle',
             editable: true, // Enable editing
           });
+
+          connections = [
+            new ConnectionPoint({ left: shape.left - shape.get('rx') - pointOffset, top: shape.top - pointOffset }),
+            new ConnectionPoint({ left: shape.left + shape.get('rx') - pointOffset, top: shape.top - pointOffset }),
+            new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top - shape.get('ry') - pointOffset  }),
+            new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top + shape.get('ry') - pointOffset  }),
+          ];
           break;
           case 'Decision':
               // Draw diamond using Fabric.js methods
@@ -50,6 +62,10 @@ const Symbol = {
                 textBaseline: 'middle',
                 editable: true, // Enable editing
               });
+              for (let i = 0; i < shape.points.length; i++) {
+                const point = shape.points[i];
+                connections.push(new ConnectionPoint({ left: point.x - pointOffset, top: point.y - pointOffset}));
+              }
             break;
           case 'Process':
               // Draw rectangle using Fabric.js methods
@@ -72,6 +88,13 @@ const Symbol = {
                 textBaseline: 'middle',
                 editable: true, // Enable editing
               });
+
+              connections = [
+                new ConnectionPoint({ left: (shape.left + (shape.width / 2)) - pointOffset, top: shape.top - pointOffset }),
+                new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top + (shape.height / 2) - pointOffset }),
+                new ConnectionPoint({ left: shape.left + shape.width - pointOffset, top: shape.top + (shape.height / 2) - pointOffset  }),
+                new ConnectionPoint({ left: shape.left + (shape.width / 2) - pointOffset, top: shape.top + shape.height - pointOffset  }),
+              ];
             break;
           case 'Data':
               // Draw polygon using Fabric.js methods
@@ -96,21 +119,29 @@ const Symbol = {
                 textBaseline: 'middle',
                 editable: true, // Enable editing
               });
+              connections = [
+                new ConnectionPoint({ left: shape.left + (shape.width / 2.416) - pointOffset, top: shape.top - pointOffset }),
+                new ConnectionPoint({ left: shape.left + (shape.width / 10) - pointOffset, top: shape.top + (shape.height / 2) - pointOffset }),
+                new ConnectionPoint({ left: shape.left + (shape.width / 1.11) - pointOffset, top: shape.top + (shape.height / 2) - pointOffset  }),
+                new ConnectionPoint({ left: shape.left + (shape.width / 1.75) - pointOffset, top: shape.top + shape.height - pointOffset  }),
+              ];
             break;
           default:
               break;
       }
 
-      textObj.width = SYMBOL_SIZE
+      textObj.width = SYMBOL_SIZE;
 
-      const group = new fabric.Group([shape, textObj], {
+      const group = new fabric.Group([shape, textObj, ...connections], {
         left: shape.left,
         top: shape.top,
         originX: 'center',
         originY: 'center',
         id,
-        symbolType: type
+        symbolType: type,
+        hasControls: false
       });
+
 
       group.on('mousedblclick', () => {
         // textForEditing is temporary obj,
@@ -175,6 +206,20 @@ const Symbol = {
           }
         })
       })
+
+      group.on('mouseover', () => {
+        for (var i = 0; i < connections.length; i++) {
+          connections[i].show(canvas);
+          canvas.renderAll();
+        }
+      });
+
+      group.on('mouseout', () => {
+        for (var i = 0; i < connections.length; i++) {
+          connections[i].hide(canvas);
+          canvas.renderAll();
+        }
+      });
 
       // group.addWithUpdate();
       canvas.add(group);
