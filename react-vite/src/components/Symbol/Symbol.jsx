@@ -8,7 +8,7 @@ const Symbol = {
     let textObj;
     let points;
     let connections = [];
-    let pointOffset = 2.5;
+    let pointOffset = 4;
       switch (type) {
         case 'Terminal':
           shape = new fabric.Ellipse({
@@ -34,10 +34,10 @@ const Symbol = {
           });
 
           connections = [
-            new ConnectionPoint({ left: shape.left - shape.get('rx') - pointOffset, top: shape.top - pointOffset }),
-            new ConnectionPoint({ left: shape.left + shape.get('rx') - pointOffset, top: shape.top - pointOffset }),
-            new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top - shape.get('ry') - pointOffset  }),
-            new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top + shape.get('ry') - pointOffset  }),
+            new ConnectionPoint({ left: shape.left - shape.get('rx') - pointOffset, top: shape.top - pointOffset, position: 'ml' }),
+            new ConnectionPoint({ left: shape.left + shape.get('rx') - pointOffset, top: shape.top - pointOffset, position: 'mr'}),
+            new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top - shape.get('ry') - pointOffset, position: 'mt' }),
+            new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top + shape.get('ry') - pointOffset, position: 'mb'  }),
           ];
           break;
           case 'Decision':
@@ -90,10 +90,10 @@ const Symbol = {
               });
 
               connections = [
-                new ConnectionPoint({ left: (shape.left + (shape.width / 2)) - pointOffset, top: shape.top - pointOffset }),
-                new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top + (shape.height / 2) - pointOffset }),
-                new ConnectionPoint({ left: shape.left + shape.width - pointOffset, top: shape.top + (shape.height / 2) - pointOffset  }),
-                new ConnectionPoint({ left: shape.left + (shape.width / 2) - pointOffset, top: shape.top + shape.height - pointOffset  }),
+                new ConnectionPoint({ left: (shape.left + (shape.width / 2)) - pointOffset, top: shape.top - pointOffset, position: 'mt' }),
+                new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top + (shape.height / 2) - pointOffset, position: 'ml' }),
+                new ConnectionPoint({ left: shape.left + shape.width - pointOffset, top: shape.top + (shape.height / 2) - pointOffset, position: 'mr'  }),
+                new ConnectionPoint({ left: shape.left + (shape.width / 2) - pointOffset, top: shape.top + shape.height - pointOffset, position: 'mb'  }),
               ];
             break;
           case 'Data':
@@ -119,11 +119,12 @@ const Symbol = {
                 textBaseline: 'middle',
                 editable: true, // Enable editing
               });
+
               connections = [
-                new ConnectionPoint({ left: shape.left + (shape.width / 2.416) - pointOffset, top: shape.top - pointOffset }),
-                new ConnectionPoint({ left: shape.left + (shape.width / 10) - pointOffset, top: shape.top + (shape.height / 2) - pointOffset }),
-                new ConnectionPoint({ left: shape.left + (shape.width / 1.11) - pointOffset, top: shape.top + (shape.height / 2) - pointOffset  }),
-                new ConnectionPoint({ left: shape.left + (shape.width / 1.75) - pointOffset, top: shape.top + shape.height - pointOffset  }),
+                new ConnectionPoint({ left: shape.left + (shape.width / 2.416) - pointOffset, top: shape.top - pointOffset, position: 'mt' }),
+                new ConnectionPoint({ left: shape.left + (shape.width / 10) - pointOffset, top: shape.top + (shape.height / 2) - pointOffset, position: 'ml' }),
+                new ConnectionPoint({ left: shape.left + (shape.width / 1.11) - pointOffset, top: shape.top + (shape.height / 2) - pointOffset, position: 'mr' }),
+                new ConnectionPoint({ left: shape.left + (shape.width / 1.75) - pointOffset, top: shape.top + shape.height - pointOffset, position: 'mb'  }),
               ];
             break;
           default:
@@ -132,14 +133,31 @@ const Symbol = {
 
       textObj.width = SYMBOL_SIZE;
 
-      const group = new fabric.Group([shape, textObj, ...connections], {
+      const hoverCircles = [];
+
+      connections.forEach(connection => {
+        const hoverCircle = new fabric.Circle({radius: 10, fill: 'red', opacity: 0});
+        hoverCircle.set({
+          left: connection.left - hoverCircle.radius * .8,
+          top: connection.top - hoverCircle.radius * .8,
+        });
+        connection.hoverCircle = hoverCircle;
+        hoverCircles.push(hoverCircle);
+      });
+
+
+
+      const group = new fabric.Group([shape, textObj, ...hoverCircles, ...connections], {
         left: shape.left,
         top: shape.top,
         originX: 'center',
         originY: 'center',
         id,
         symbolType: type,
-        hasControls: false
+        hasControls: false,
+        subTargetCheck: true,
+        // perPixelTargetFind: true,
+        currentConnection: null
       });
 
 
@@ -208,18 +226,55 @@ const Symbol = {
       })
 
       group.on('mouseover', () => {
-        for (var i = 0; i < connections.length; i++) {
-          connections[i].show(canvas);
+        for (let i = 0; i < connections.length; i++) {
+          connections[i].show();
+          // connections[i].setupEvents();
           canvas.renderAll();
         }
+
+        canvas.on('mouse:move',onMouseMove)
       });
 
       group.on('mouseout', () => {
-        for (var i = 0; i < connections.length; i++) {
-          connections[i].hide(canvas);
+        for (let i = 0; i < connections.length; i++) {
+          connections[i].hide();
           canvas.renderAll();
         }
+
+        onMouseMove();
+        canvas.off('mouse:move',onMouseMove)
       });
+
+      const onMouseMove = (e) => {
+        if(e && e.subTargets[0] && (e.subTargets[0].objectType == 'connection')){
+          e.subTargets[0].handleMouseOver();
+          e.target.currentConnection = e.subTargets[0];
+          // console.log(e.target.currentConnection)
+        }
+        else if (group.currentConnection) {
+          group.currentConnection.handleMouseOut();
+          group.currentConnection = null;
+        }
+        // group.dirty = true;
+        canvas.requestRenderAll();
+       }
+
+       group.on('mousedown', () => {
+        if (group.currentConnection) {
+          console.log('mouse down')
+          group.currentConnection.handleMouseDown(group)
+          // console.log(canvas._objects)
+          canvas.on('mouse:down',onMouseMove)
+        }
+      });
+
+      group.on('mouseup', () => {
+        if (group.currentConnection) {
+          console.log('mouse up')
+          canvas.off('mouse:down',onMouseMove)
+        }
+      });
+
 
       // group.addWithUpdate();
       canvas.add(group);
