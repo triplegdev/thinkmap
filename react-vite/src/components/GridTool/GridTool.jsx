@@ -139,7 +139,6 @@ const GridTool = ({ symbols, onEditSymbol, onDeleteSymbol }) => {
         canvas.off('selection:updated', handleSelection);
         document.removeEventListener('keydown', keyDownEvent);
         canvas.off('object:modified', handleMoveSymbol);
-        canvas.off('mouse:move'); // from mouseup arrow creation
     };
   }, [symbols]);
 

@@ -83,7 +83,7 @@ class ConnectionPoint extends fabric.Object {
         console.log('create line');
         const point = group.oCoords[this.position];
         const tl = group.oCoords['tl'];// top left
-        const br = group.oCoords['br'];// bottom right
+        // const br = group.oCoords['br'];// bottom right
         console.log(point);
 
         let x;
