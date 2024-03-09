@@ -1,5 +1,6 @@
 import { fabric } from 'fabric';
-import ConnectionPoint from '../ConnectionPoint/ConnectionPoint';
+import Arrow from '../Arrow';
+import ConnectionPoint from '../ConnectionPoint';
 const SYMBOL_SIZE = 150;
 
 const Symbol = {
@@ -9,8 +10,9 @@ const Symbol = {
     let points;
     let connections = [];
     let pointOffset = 4;
+    const positions = ['mt', 'mr', 'mb', 'ml'];
       switch (type) {
-        case 'Terminal':
+        case 'Terminal': {
           shape = new fabric.Ellipse({
               left: x,
               top: y,
@@ -19,6 +21,8 @@ const Symbol = {
               fill: '#E2937B',
               originX: 'center',
               originY: 'center',
+              stroke: '#d46442',
+              strokeWidth: 3,
           });
           textObj = new fabric.Textbox(text, {
             left: x,
@@ -40,7 +44,8 @@ const Symbol = {
             new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top + shape.get('ry') - pointOffset, position: 'mb'  }),
           ];
           break;
-          case 'Decision':
+        }
+          case 'Decision': {
               // Draw diamond using Fabric.js methods
               shape = new fabric.Polygon([
                   { x: x + SYMBOL_SIZE / 1.75, y },
@@ -49,6 +54,8 @@ const Symbol = {
                   { x, y: y + SYMBOL_SIZE / 3 },
               ], {
                   fill: '#E6B85F',
+                  stroke: '#e3a01e',
+                  strokeWidth: 3,
               });
               textObj = new fabric.Textbox(text, {
                 left: x + SYMBOL_SIZE / 1.75,
@@ -64,10 +71,11 @@ const Symbol = {
               });
               for (let i = 0; i < shape.points.length; i++) {
                 const point = shape.points[i];
-                connections.push(new ConnectionPoint({ left: point.x - pointOffset, top: point.y - pointOffset}));
+                connections.push(new ConnectionPoint({ left: point.x - pointOffset, top: point.y - pointOffset, position: positions[i]}));
               }
             break;
-          case 'Process':
+          }
+          case 'Process': {
               // Draw rectangle using Fabric.js methods
               shape = new fabric.Rect({
                   left: x,
@@ -75,6 +83,8 @@ const Symbol = {
                   width: SYMBOL_SIZE,
                   height: SYMBOL_SIZE / 2,
                   fill: '#61C16A',
+                  stroke: '#2aa336',
+                  strokeWidth: 3,
               });
               textObj = new fabric.Textbox(text, {
                 left: x + SYMBOL_SIZE / 2,
@@ -93,10 +103,11 @@ const Symbol = {
                 new ConnectionPoint({ left: (shape.left + (shape.width / 2)) - pointOffset, top: shape.top - pointOffset, position: 'mt' }),
                 new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top + (shape.height / 2) - pointOffset, position: 'ml' }),
                 new ConnectionPoint({ left: shape.left + shape.width - pointOffset, top: shape.top + (shape.height / 2) - pointOffset, position: 'mr'  }),
-                new ConnectionPoint({ left: shape.left + (shape.width / 2) - pointOffset, top: shape.top + shape.height - pointOffset, position: 'mb'  }),
+                new ConnectionPoint({ left: (shape.left + (shape.width / 2)) - pointOffset, top: shape.top + shape.height - pointOffset, position: 'mb'  }),
               ];
             break;
-          case 'Data':
+          }
+          case 'Data': {
               // Draw polygon using Fabric.js methods
               points = [
                   { x, y },
@@ -106,6 +117,8 @@ const Symbol = {
               ];
               shape = new fabric.Polygon(points, {
                   fill: '#7CABE2',
+                  stroke: '#438ade',
+                  strokeWidth: 3,
               });
               textObj = new fabric.Textbox(text, {
                 left: x + SYMBOL_SIZE / 1.625,
@@ -121,12 +134,13 @@ const Symbol = {
               });
 
               connections = [
-                new ConnectionPoint({ left: shape.left + (shape.width / 2.416) - pointOffset, top: shape.top - pointOffset, position: 'mt' }),
+                new ConnectionPoint({ left: (shape.left + (shape.width / 2)), top: shape.top - pointOffset, position: 'mt' }),
                 new ConnectionPoint({ left: shape.left + (shape.width / 10) - pointOffset, top: shape.top + (shape.height / 2) - pointOffset, position: 'ml' }),
                 new ConnectionPoint({ left: shape.left + (shape.width / 1.11) - pointOffset, top: shape.top + (shape.height / 2) - pointOffset, position: 'mr' }),
-                new ConnectionPoint({ left: shape.left + (shape.width / 1.75) - pointOffset, top: shape.top + shape.height - pointOffset, position: 'mb'  }),
+                new ConnectionPoint({ left: (shape.left + (shape.width / 2)), top: shape.top + shape.height - pointOffset, position: 'mb'  }),
               ];
             break;
+          }
           default:
               break;
       }
@@ -138,8 +152,8 @@ const Symbol = {
       connections.forEach(connection => {
         const hoverCircle = new fabric.Circle({radius: 10, fill: 'red', opacity: 0});
         hoverCircle.set({
-          left: connection.left - hoverCircle.radius * .8,
-          top: connection.top - hoverCircle.radius * .8,
+          left: connection.left - 7,
+          top: connection.top - 7,
         });
         connection.hoverCircle = hoverCircle;
         hoverCircles.push(hoverCircle);
@@ -154,6 +168,7 @@ const Symbol = {
         originY: 'center',
         id,
         symbolType: type,
+        size: SYMBOL_SIZE,
         hasControls: false,
         subTargetCheck: true,
         // perPixelTargetFind: true,
@@ -245,13 +260,20 @@ const Symbol = {
         canvas.off('mouse:move',onMouseMove)
       });
 
-      const onMouseMove = (e) => {
+
+      const onMouseMove = e => {
         if(e && e.subTargets[0] && (e.subTargets[0].objectType == 'connection')){
           e.subTargets[0].handleMouseOver();
           e.target.currentConnection = e.subTargets[0];
           // console.log(e.target.currentConnection)
+          // console.log('starting', startingPoint)
+          group.selectable = false;
+          // console.log(e.target.currentConnection)
+
         }
         else if (group.currentConnection) {
+          group.selectable = true;
+          // console.log(group.selectable)
           group.currentConnection.handleMouseOut();
           group.currentConnection = null;
         }
@@ -262,23 +284,70 @@ const Symbol = {
        group.on('mousedown', () => {
         if (group.currentConnection) {
           console.log('mouse down')
-          group.currentConnection.handleMouseDown(group)
+          const startingPoint = group.currentConnection.handleMouseDown(group);
           // console.log(canvas._objects)
-          canvas.on('mouse:down',onMouseMove)
+          // canvas.on('mouse:down', onMouseMove);
+          let line;
+          const onArrowStart = (moveEvent)  => {
+            if (line) {
+                canvas.remove(line);
+            }
+
+            line = new Arrow([startingPoint.x, startingPoint.y, moveEvent.pointer.x, moveEvent.pointer.y], {
+                stroke: 'black',
+                strokeWidth: 2,
+                hasControls: false,
+                selectable: true,
+            });
+            canvas.add(line);
+            canvas.sendToBack(line);
+        }
+
+        canvas.on('mouse:move', onArrowStart);
+
+        canvas.on('mouse:up', function onArrowFinish(e) {
+
+            canvas.off('mouse:move', onArrowStart);
+            canvas.off('mouse:up', onArrowFinish);
+
+            // check if the mouse is released over another connection
+            const target = e.target;
+            console.log(target)
+            if (e && e.subTargets[0] && e.subTargets[0].objectType == 'connection') {
+                //mouse is released over a connection, keep the line
+                console.log('Mouse up over connection');
+                const connectedSymbol = e.subTargets[0];
+                const endPoint = connectedSymbol.handleMouseDown(e.target);
+                console.log('true?', e.target !== group)
+                //remove line if connected to itself
+                if (e.target !== group) line.set({ x2: endPoint.x, y2: endPoint.y });
+                else canvas.remove(line);
+
+            } else {
+                //mouse is released elsewhere, remove the line
+                console.log('Mouse up outside connection');
+                canvas.remove(line);
+            }
+        });
         }
       });
 
       group.on('mouseup', () => {
+        // group.selectable = false;
+        // group.hasControls = false;
         if (group.currentConnection) {
           console.log('mouse up')
-          canvas.off('mouse:down',onMouseMove)
+          console.log('finish dragging');
+          // canvas.off('mouse:down',onMouseMove)
         }
       });
+
 
 
       // group.addWithUpdate();
       canvas.add(group);
     },
+
 
 };
 

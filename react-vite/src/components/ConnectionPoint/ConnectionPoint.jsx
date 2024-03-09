@@ -47,10 +47,12 @@ class ConnectionPoint extends fabric.Object {
       }
 
       handleMouseDown(group) {
-        const line = this.draw(group);
-        this.canvas.add(line);
+        const startingPoint = this.draw(group);
+        return startingPoint;
+        // this.canvas.add(line);
 
-        console.log(this.oCoords)
+        // console.log(group);
+        // console.log(this);
       }
 
       handleMouseOver() {
@@ -77,24 +79,57 @@ class ConnectionPoint extends fabric.Object {
         // this.canvas.renderAll();
       }
 
-      // checkCanvas() {
-      //   console.log(this.canvas);
-      // }
       draw(group) {
         console.log('create line');
-        console.log(group)
         const point = group.oCoords[this.position];
+        const tl = group.oCoords['tl'];// top left
+        const br = group.oCoords['br'];// bottom right
         console.log(point);
-        // create arrow
-        const line = new fabric.Line([point.x, point.y, point.x + 500, point.y + 0], {
-          stroke: 'black',
-          strokeWidth: 2,
-          hasControls: false,
-          selectable: true,
-        });
+
+        let x;
+        let y;
+
+        switch(this.position) {
+          case 'mt':
+            x = point.x;
+            y = point.y + this.hoverCircle.radius;
+            break;
+          case 'ml':
+            x = point.x + this.hoverCircle.radius;
+            y = point.y;
+            break;
+          case 'mr':
+            x = point.x - this.hoverCircle.radius
+            y = point.y;
+            break;
+          case 'mb':
+            x = point.x
+            y = point.y - this.hoverCircle.radius;
+            break;
+        }
+
+        // if (this.position === 'mt' && group.symbolType === "Data") {
+        //   // const x2 = tl.x + group.size;
+        //   // x = (tl.x + x2) / 2;
+        //   console.log('tl', tl.x);
+        //   x = (tl.x + br.x) / 2;
+        // }
+        if (this.position === 'ml' && group.symbolType === "Data") {
+          x = tl.x + (group.size / 8);
+        }
+        else if (this.position === 'mr' && group.symbolType === "Data") {
+          x = tl.x + (group.size + (group.size * .125));
+        }
+        // else if (this.position === 'mb' && group.symbolType === "Data") {
+        //   // const x1 = tl.x + (group.size / 4);
+        //   // x = (x1 + br.x) / 2;
+        //   x = (tl.x + br.x) / 2;
+        // }
+
+        const startingPoint = {x, y};
 
         console.log(group.oCoords);
-        return line;
+        return startingPoint;
 
       }
 

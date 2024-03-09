@@ -11,6 +11,8 @@ const GridTool = ({ symbols, onEditSymbol, onDeleteSymbol }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
         const canvas = new fabric.Canvas(canvasRef.current);
+        canvas.selection = false;
+
 
     const resizeCanvas = () => {
 
@@ -59,8 +61,20 @@ const GridTool = ({ symbols, onEditSymbol, onDeleteSymbol }) => {
             left: 0,
             top: 0,
             selectable: false,
-            hasControls: false
+            hasControls: false,
+            gridSize,
         });
+
+        //snap to grid
+
+        // canvas.on('object:moving', function(options) {
+        //     const target = options.target;
+        //     target.set({
+        //         left: Math.round(target.left / gridSize) * gridSize,
+        //         top: Math.round(target.top / gridSize) * gridSize,
+        //     });
+        //     canvas.renderAll();
+        // });
 
         canvas.add(gridGroup);
         canvas.renderAll();
@@ -125,6 +139,7 @@ const GridTool = ({ symbols, onEditSymbol, onDeleteSymbol }) => {
         canvas.off('selection:updated', handleSelection);
         document.removeEventListener('keydown', keyDownEvent);
         canvas.off('object:modified', handleMoveSymbol);
+        canvas.off('mouse:move'); // from mouseup arrow creation
     };
   }, [symbols]);
 
