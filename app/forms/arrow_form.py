@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_login import current_user
-from wtforms import IntegerField
+from wtforms import StringField, IntegerField
 from wtforms.validators import DataRequired,  ValidationError
 from app.models import Symbol
 
@@ -21,3 +21,5 @@ def check_symbol(form, field):
 class ArrowForm(FlaskForm):
     symbol_to_id = IntegerField('symbol_to_id', validators=[DataRequired(), check_symbol])
     symbol_from_id = IntegerField('symbol_to_id', validators=[DataRequired()])
+    from_connector = StringField('from_connector', validators=[DataRequired()])
+    to_connector = StringField('to_connector', validators=[DataRequired()])

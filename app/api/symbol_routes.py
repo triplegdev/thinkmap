@@ -21,6 +21,14 @@ def get_symbols(flowchart_id):
 @login_required
 def create_symbol(flowchart_id):
 
+    flowchart = Flowchart.query.get(flowchart_id)
+
+    if not flowchart:
+        return {"error": "flowchart not found"}, 404
+
+    if flowchart.user_id != int(current_user.get_id()):
+        return {"error": "Unauthorized"}, 401
+
     form = SymbolForm()
     form['csrf_token'].data = request.cookies['csrf_token']
 

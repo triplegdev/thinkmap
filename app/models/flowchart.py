@@ -19,6 +19,7 @@ class Flowchart(db.Model, UserMixin):
     user = db.relationship("User", back_populates='flowcharts')
     # session = db.relationship('Session', back_populates='flowchart')
     symbols = db.relationship('Symbol', back_populates='flowchart', cascade="all, delete-orphan")
+    arrows = db.relationship('Arrow', back_populates='flowchart', cascade="all, delete-orphan")
 
     def to_dict(self):
         return {

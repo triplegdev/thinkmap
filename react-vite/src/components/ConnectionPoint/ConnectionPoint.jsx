@@ -15,6 +15,8 @@ class ConnectionPoint extends fabric.Object {
           hasControls: false,
           selectable: false,
           visible: false, // initially hidden
+          fromConnected: false,
+          toConnected: false
         });
 
       }
@@ -80,11 +82,11 @@ class ConnectionPoint extends fabric.Object {
       }
 
       draw(group) {
-        console.log('create line');
+        // console.log('create line');
         const point = group.oCoords[this.position];
         const tl = group.oCoords['tl'];// top left
         // const br = group.oCoords['br'];// bottom right
-        console.log(point);
+        // console.log('point', point);
 
         let x;
         let y;
@@ -128,7 +130,7 @@ class ConnectionPoint extends fabric.Object {
 
         const startingPoint = {x, y};
 
-        console.log(group.oCoords);
+        // console.log(group.oCoords);
         return startingPoint;
 
       }

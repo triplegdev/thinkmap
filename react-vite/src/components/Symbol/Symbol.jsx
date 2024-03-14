@@ -4,7 +4,7 @@ import ConnectionPoint from '../ConnectionPoint';
 const SYMBOL_SIZE = 150;
 
 const Symbol = {
-  draw: function(canvas, id, type, x, y, text, onEditSymbol) { // Accept canvas as the first argument
+  draw: function(canvas, id, type, x, y, text, onEditSymbol, onCreateArrow) {
     let shape;
     let textObj;
     let points;
@@ -283,7 +283,8 @@ const Symbol = {
 
        group.on('mousedown', () => {
         if (group.currentConnection) {
-          console.log('mouse down')
+          // console.log('mouse down');
+          const fromSymbolConnection = group.currentConnection;
           const startingPoint = group.currentConnection.handleMouseDown(group);
           // console.log(canvas._objects)
           // canvas.on('mouse:down', onMouseMove);
@@ -298,9 +299,12 @@ const Symbol = {
                 strokeWidth: 2,
                 hasControls: false,
                 selectable: true,
+                lockMovementX: true,
+                lockMovementY: true,
             });
             canvas.add(line);
             canvas.sendToBack(line);
+            // console.log(canvas.getObjects());
         }
 
         canvas.on('mouse:move', onArrowStart);
@@ -312,40 +316,59 @@ const Symbol = {
 
             // check if the mouse is released over another connection
             const target = e.target;
-            console.log(target)
+            // console.log(target);
             if (e && e.subTargets[0] && e.subTargets[0].objectType == 'connection') {
                 //mouse is released over a connection, keep the line
-                console.log('Mouse up over connection');
-                const connectedSymbol = e.subTargets[0];
-                const endPoint = connectedSymbol.handleMouseDown(e.target);
-                console.log('true?', e.target !== group)
+                // console.log('Mouse up over connection');
+                // const fromSymbolConnection = {...group.currentConnection};
+                const toSymbolConnection = e.subTargets[0];
+                const endPoint = toSymbolConnection.handleMouseDown(target);
                 //remove line if connected to itself
-                if (e.target !== group) line.set({ x2: endPoint.x, y2: endPoint.y });
+                if (e.target !== group) {
+                  line.set({ x2: endPoint.x, y2: endPoint.y });
+                  canvas.bringToFront(line); // to be selected | cannot be selected if in back
+                  fromSymbolConnection.fromConnected = true;
+                  toSymbolConnection.toConnected = true;
+                  // console.log(fromSymbolConnection);
+                  // console.log(toSymbolConnection);
+                  fromSymbolConnection.line = line;
+                  toSymbolConnection.line = line;
+                  const createdArrow = {
+                    symbol_from_id: group.id,
+                    symbol_to_id: target.id,
+                    from_connector: fromSymbolConnection.position,
+                    to_connector: toSymbolConnection.position
+                  }
+                  // console.log(createdArrow)
+
+                  onCreateArrow(createdArrow);
+                }
                 else canvas.remove(line);
 
             } else {
                 //mouse is released elsewhere, remove the line
-                console.log('Mouse up outside connection');
+                // console.log('Mouse up outside connection');
                 canvas.remove(line);
             }
         });
         }
       });
 
-      group.on('mouseup', () => {
-        // group.selectable = false;
-        // group.hasControls = false;
-        if (group.currentConnection) {
-          console.log('mouse up')
-          console.log('finish dragging');
-          // canvas.off('mouse:down',onMouseMove)
-        }
-      });
+      // group.on('mouseup', () => {
+      //   // group.selectable = false;
+      //   // group.hasControls = false;
+      //   if (group.currentConnection) {
+      //     console.log('mouse up')
+      //     console.log('finish dragging');
+      //     // canvas.off('mouse:down',onMouseMove)
+      //   }
+      // });
 
 
 
       // group.addWithUpdate();
       canvas.add(group);
+      return group;
     },
 
 

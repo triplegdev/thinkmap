@@ -1,7 +1,7 @@
-const GET_SYMBOLS = 'symbol/GET_SYMBOLS';
-const ADD_SYMBOL = 'symbol/ADD_SYMBOL';
-const EDIT_SYMBOL = 'symbol/EDIT_SYMBOL';
-const DELETE_SYMBOL = 'flowcharts/DELETE_SYMBOL';
+const GET_SYMBOLS = 'symbols/GET_SYMBOLS';
+const ADD_SYMBOL = 'symbols/ADD_SYMBOL';
+const EDIT_SYMBOL = 'symbols/EDIT_SYMBOL';
+const DELETE_SYMBOL = 'symbols/DELETE_SYMBOL';
 
 const getSymbols = (symbols) => ({
     type: GET_SYMBOLS,
