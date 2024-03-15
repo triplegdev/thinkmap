@@ -1,4 +1,4 @@
-from app.models import db, Symbol, Arrow, environment, SCHEMA
+from app.models import db, Flowchart, Symbol, Arrow, environment, SCHEMA
 from sqlalchemy.sql import text
 
 
@@ -6,6 +6,11 @@ from sqlalchemy.sql import text
 def seed_arrows():
 
 # Retrieve symbols from the seed symbol data
+
+    flowchart_id_1 = Flowchart.query.filter_by(title="Sample Flowchart 1").first()
+    flowchart_id_2 = Flowchart.query.filter_by(title="Sample Flowchart 2").first()
+    flowchart_id_3 = Flowchart.query.filter_by(title="Sample Flowchart 3").first()
+
     flowchart1_t1 = Symbol.query.filter_by(text="Start").first()
     flowchart1_t2 = Symbol.query.filter_by(text="End").first()
     flowchart1_io1 = Symbol.query.filter_by(text="Read A").first()
@@ -32,28 +37,28 @@ def seed_arrows():
 
     # Create arrows based on the relationships between symbols
     arrows = [
-        Arrow(symbol_from_id=flowchart1_t1.id, symbol_to_id=flowchart1_io1.id),
-        Arrow(symbol_from_id=flowchart1_io1.id, symbol_to_id=flowchart1_io2.id),
-        Arrow(symbol_from_id=flowchart1_io2.id, symbol_to_id=flowchart1_p1.id),
-        Arrow(symbol_from_id=flowchart1_p1.id, symbol_to_id=flowchart1_p2.id),
-        Arrow(symbol_from_id=flowchart1_p2.id, symbol_to_id=flowchart1_t2.id),
+        Arrow(flowchart_id=flowchart_id_1.id, symbol_from_id=flowchart1_t1.id, symbol_to_id=flowchart1_io1.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_1.id, symbol_from_id=flowchart1_io1.id, symbol_to_id=flowchart1_io2.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_1.id, symbol_from_id=flowchart1_io2.id, symbol_to_id=flowchart1_p1.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_1.id, symbol_from_id=flowchart1_p1.id, symbol_to_id=flowchart1_p2.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_1.id, symbol_from_id=flowchart1_p2.id, symbol_to_id=flowchart1_t2.id, from_connector='mb', to_connector='mt'),
 
-        Arrow(symbol_from_id=flowchart2_t1.id, symbol_to_id=flowchart2_io1.id),
-        Arrow(symbol_from_id=flowchart2_io1.id, symbol_to_id=flowchart2_d1.id),
-        Arrow(symbol_from_id=flowchart2_d1.id, symbol_to_id=flowchart2_p1.id),
-        Arrow(symbol_from_id=flowchart2_d1.id, symbol_to_id=flowchart2_p2.id),
-        Arrow(symbol_from_id=flowchart2_p1.id, symbol_to_id=flowchart2_t2.id),
-        Arrow(symbol_from_id=flowchart2_p2.id, symbol_to_id=flowchart2_t2.id),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_t1.id, symbol_to_id=flowchart2_io1.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_io1.id, symbol_to_id=flowchart2_d1.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_d1.id, symbol_to_id=flowchart2_p1.id, from_connector='ml', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_d1.id, symbol_to_id=flowchart2_p2.id, from_connector='mr', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_p1.id, symbol_to_id=flowchart2_t2.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_p2.id, symbol_to_id=flowchart2_t2.id, from_connector='mb', to_connector='mt'),
 
-        Arrow(symbol_from_id=flowchart3_t1.id, symbol_to_id=flowchart3_io1.id),
-        Arrow(symbol_from_id=flowchart3_io1.id, symbol_to_id=flowchart3_d1.id),
-        Arrow(symbol_from_id=flowchart3_d1.id, symbol_to_id=flowchart3_p1.id),
-        Arrow(symbol_from_id=flowchart3_d1.id, symbol_to_id=flowchart3_p2.id),
-        Arrow(symbol_from_id=flowchart3_p1.id, symbol_to_id=flowchart3_d2.id),
-        Arrow(symbol_from_id=flowchart3_p2.id, symbol_to_id=flowchart3_d2.id),
-        Arrow(symbol_from_id=flowchart3_d2.id, symbol_to_id=flowchart3_p3.id),
-        Arrow(symbol_from_id=flowchart3_d2.id, symbol_to_id=flowchart3_t2.id),
-        Arrow(symbol_from_id=flowchart3_p3.id, symbol_to_id=flowchart3_t2.id)
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_t1.id, symbol_to_id=flowchart3_io1.id),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_io1.id, symbol_to_id=flowchart3_d1.id),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d1.id, symbol_to_id=flowchart3_p1.id),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d1.id, symbol_to_id=flowchart3_p2.id),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_p1.id, symbol_to_id=flowchart3_d2.id),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_p2.id, symbol_to_id=flowchart3_d2.id),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d2.id, symbol_to_id=flowchart3_p3.id),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d2.id, symbol_to_id=flowchart3_t2.id),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_p3.id, symbol_to_id=flowchart3_t2.id)
     ]
 
     # Add arrows to the session
