@@ -8,11 +8,13 @@ import thunk from "redux-thunk";
 import sessionReducer from "./session";
 import flowchartsReducer from "./flowcharts";
 import symbolsReducer from "./symbols";
+import arrowsReducer from "./arrows";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
   flowcharts: flowchartsReducer,
-  symbols: symbolsReducer
+  symbols: symbolsReducer,
+  arrows: arrowsReducer
 });
 
 let enhancer;

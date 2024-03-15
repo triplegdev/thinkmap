@@ -12,46 +12,46 @@ def seed_symbols():
     flowchart1_t1 = Symbol(
         flowchart_id=flowchart_id_1.id,
         type="Terminal",
-        x_position=100,
-        y_position=100,
+        x_position=350,
+        y_position=70,
         text="Start"
     )
     flowchart1_t2 = Symbol(
         flowchart_id=flowchart_id_1.id,
         type="Terminal",
-        x_position=200,
-        y_position=200,
+        x_position=350,
+        y_position=620,
         text="End"
     )
 
     flowchart1_io1 = Symbol(
         flowchart_id=flowchart_id_1.id,
         type="Data",
-        x_position=300,
-        y_position=300,
+        x_position=350,
+        y_position=180,
         text="Read A"
     )
     flowchart1_io2 = Symbol(
         flowchart_id=flowchart_id_1.id,
         type="Data",
-        x_position=400,
-        y_position=400,
+        x_position=350,
+        y_position=290,
         text="Read B"
     )
 
     flowchart1_p1 = Symbol(
         flowchart_id=flowchart_id_1.id,
         type="Process",
-        x_position=500,
-        y_position=500,
+        x_position=350,
+        y_position=400,
         text="Calculate Sum as A + B"
     )
 
     flowchart1_p2 = Symbol(
         flowchart_id=flowchart_id_1.id,
         type="Process",
-        x_position=600,
-        y_position=600,
+        x_position=350,
+        y_position=510,
         text="Print Sum"
     )
 
@@ -107,7 +107,7 @@ def seed_symbols():
         type="Terminal",
         x_position=100,
         y_position=100,
-        text="Start"
+        text="Leave Home"
     )
 
     flowchart3_t2 = Symbol(

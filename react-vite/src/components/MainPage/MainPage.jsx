@@ -5,6 +5,7 @@ import LeftPanel from '../LeftPanel/LeftPanel';
 import RightPanel from '../RightPanel/RightPanel';
 import GridTool from '../GridTool/GridTool';
 import { deleteSymbol, getSymbolsThunk, createSymbol, editSymbol } from '../../redux/symbols';
+import { deleteArrow, getArrowsThunk, createArrow } from '../../redux/arrows';
 import './MainPage.css';
 
 
@@ -12,6 +13,7 @@ const MainPage = () => {
     const user = useSelector((store) => store.session.user);
     const flowcharts = useSelector((store) => store.flowcharts);
     const symbols = useSelector(store => store.symbols);
+    const arrows = useSelector(store => store.arrows);
     const dispatch = useDispatch();
     const [isLoaded, setIsLoaded] = useState(false);
     const [flowchart, setFlowchart] = useState({});
@@ -32,8 +34,10 @@ const MainPage = () => {
             else {
                 setFlowchart(data.flowcharts[0]);
                 dispatch(getSymbolsThunk(data.flowcharts[0].id)).then(() => {
-                    setTitle(data.flowcharts[0].title);
-                    setIsLoaded(true);
+                    dispatch(getArrowsThunk(data.flowcharts[0].id)).then(() => {
+                        setTitle(data.flowcharts[0].title);
+                        setIsLoaded(true);
+                    });
                 });
             }
         });
@@ -43,6 +47,10 @@ const MainPage = () => {
       dispatch(createSymbol(symbol, flowchart.id))
     };
 
+    const handleCreateArrow = (arrow) => {
+        dispatch(createArrow(arrow, flowchart.id))
+      };
+
     const handleEditSymbol = (payload, symbolId) => {
         dispatch(editSymbol(payload, flowchart.id, symbolId));
     }
@@ -51,10 +59,16 @@ const MainPage = () => {
         dispatch(deleteSymbol(flowchart.id, symbolId));
     }
 
+    const handleDeleteArrow = (arrowId) => {
+        dispatch(deleteArrow(flowchart.id, arrowId));
+    }
+
     const handleSelectFlowchart = (selectedFlowchart) => {
         setFlowchart(selectedFlowchart);
         setTitle(selectedFlowchart.title)
-        dispatch(getSymbolsThunk(selectedFlowchart.id));
+        dispatch(getSymbolsThunk(selectedFlowchart.id)).then(() => {
+            dispatch(getArrowsThunk(selectedFlowchart.id))
+        });
     }
 
     const toggleRightPanel = () => {
@@ -67,7 +81,10 @@ const MainPage = () => {
             // console.log(lastUpadatedFlowchart)
             setFlowchart(lastUpadatedFlowchart);
             setTitle(lastUpadatedFlowchart.title);
-            dispatch(getSymbolsThunk(lastUpadatedFlowchart.id));
+            // dispatch(getSymbolsThunk(lastUpadatedFlowchart.id));
+            dispatch(getSymbolsThunk(lastUpadatedFlowchart.id)).then(() => {
+                dispatch(getArrowsThunk(lastUpadatedFlowchart.id))
+            });
         });
     };
 
@@ -101,7 +118,10 @@ const MainPage = () => {
             <GridTool
                 onEditSymbol={handleEditSymbol}
                 onDeleteSymbol={handleDeleteSymbol}
+                onCreateArrow={handleCreateArrow}
+                onDeleteArrow={handleDeleteArrow}
                 symbols={symbols}
+                arrows={arrows}
             />
             <RightPanel
                 isVisible={rightPanelVisible}
