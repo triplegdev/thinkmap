@@ -43,12 +43,12 @@ def seed_arrows():
         Arrow(flowchart_id=flowchart_id_1.id, symbol_from_id=flowchart1_p1.id, symbol_to_id=flowchart1_p2.id, from_connector='mb', to_connector='mt'),
         Arrow(flowchart_id=flowchart_id_1.id, symbol_from_id=flowchart1_p2.id, symbol_to_id=flowchart1_t2.id, from_connector='mb', to_connector='mt'),
 
-        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_t1.id, symbol_to_id=flowchart2_io1.id, ),
-        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_io1.id, symbol_to_id=flowchart2_d1.id),
-        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_d1.id, symbol_to_id=flowchart2_p1.id),
-        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_d1.id, symbol_to_id=flowchart2_p2.id),
-        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_p1.id, symbol_to_id=flowchart2_t2.id),
-        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_p2.id, symbol_to_id=flowchart2_t2.id),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_t1.id, symbol_to_id=flowchart2_io1.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_io1.id, symbol_to_id=flowchart2_d1.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_d1.id, symbol_to_id=flowchart2_p1.id, from_connector='ml', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_d1.id, symbol_to_id=flowchart2_p2.id, from_connector='mr', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_p1.id, symbol_to_id=flowchart2_t2.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_p2.id, symbol_to_id=flowchart2_t2.id, from_connector='mb', to_connector='mt'),
 
         Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_t1.id, symbol_to_id=flowchart3_io1.id),
         Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_io1.id, symbol_to_id=flowchart3_d1.id),
