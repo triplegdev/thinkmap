@@ -27,12 +27,13 @@ const RightPanel = ({ isVisible, onClose, flowcharts, onDeleteFlowchart, onSelec
             {Object.values(flowcharts).map((flowchart) => (
                 <li key={flowchart.id} onClick={() => onSelectFlowchart(flowchart)} onMouseEnter={() => handleMouseEnter(flowchart)} onMouseLeave={handleMouseLeave}>
                     {flowchart.title}
-                    <OpenModalButton
-                        buttonText={<TbTrash />}
-                        modalComponent={<DeleteFlowchartModal onDelete={() => handleDelete(flowchart.id)}/>}
-                        buttonClass={hoveredItemId === flowchart.id ? 'show' : 'hide'}
-                    />
-                    {/* <span className={hoveredItemId === flowchart.id ? 'show' : 'hide'} onClick={handleDeleteFlowchart}><TbTrash /></span> */}
+                    {Object.values(flowcharts).length > 1 &&
+                        <OpenModalButton
+                            buttonText={<TbTrash />}
+                            modalComponent={<DeleteFlowchartModal onDelete={() => handleDelete(flowchart.id)}/>}
+                            buttonClass={hoveredItemId === flowchart.id ? 'show' : 'hide'}
+                        />
+                    }
                 </li>
             ))}
             </ul>

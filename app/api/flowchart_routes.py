@@ -53,13 +53,14 @@ def edit_or_delete_flowchart(id):
 @flowchart_routes.route('/', methods=['POST'])
 @login_required
 def create_flowchart():
+    user_id = current_user.get_id()
     form = FlowchartForm()
     form['title'].data = 'Untitled'
     form['csrf_token'].data = request.cookies['csrf_token']
 
     if form.validate_on_submit():
         title = form.data['title']
-        existing_flowcharts = Flowchart.query.filter(Flowchart.title.like('Untitled%')).all()
+        existing_flowcharts = Flowchart.query.filter_by(user_id=user_id).filter(Flowchart.title.like('Untitled%')).all()
         existing_titles = set(flowchart.title for flowchart in existing_flowcharts)
         # Find the lowest available number for the suffix starting from 2
         if title in existing_titles:
@@ -69,7 +70,7 @@ def create_flowchart():
                     break
 
         flowchart = Flowchart(
-            user_id=current_user.get_id(),
+            user_id=user_id,
             title=title
         )
         db.session.add(flowchart)

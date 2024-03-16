@@ -2,6 +2,12 @@ const GET_ARROWS = 'arrows/GET_ARROWS';
 const ADD_ARROW = 'arrows/ADD_ARROW';
 // const EDIT_ARROW = 'arrows/EDIT_ARROW';
 const DELETE_ARROW = 'arrows/DELETE_ARROW';
+const RESET_ARROWS = 'symbols/RESET_ARROWS';
+
+
+export const resetArrows = () => ({
+    type: RESET_ARROWS
+});
 
 const getArrows = (arrows) => ({
     type: GET_ARROWS,
@@ -118,6 +124,8 @@ const arrowsReducer = (state = {}, action) => {
             delete newState[arrowId];
             return newState;
         }
+        case RESET_ARROWS:
+            return {};
         default:
             return state;
     }

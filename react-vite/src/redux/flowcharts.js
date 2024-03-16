@@ -2,7 +2,12 @@ const ADD_FLOWCHART = 'flowcharts/ADD_FLOWCHART';
 const GET_USER_FLOWCHARTS = 'flowcharts/GET_USER_FLOWCHARTS';
 const EDIT_FLOWCHART = 'flowcharts/EDIT_FLOWCHART';
 const DELETE_FLOWCHART = 'flowchart/DELETE_FLOWCHART';
+const RESET_FLOWCHART = 'flowchart/RESET_FLOWCHART';
 
+
+export const resetFlowcharts = () => ({
+    type: RESET_FLOWCHART
+});
 
 const addFlowchart = (flowchart) => ({
     type: ADD_FLOWCHART,
@@ -117,6 +122,8 @@ const flowchartsReducer = (state = {}, action) => {
             delete newState[flowchartId];
             return newState;
         }
+        case RESET_FLOWCHART:
+            return {};
         default:
             return state;
     }

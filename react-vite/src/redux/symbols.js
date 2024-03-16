@@ -2,6 +2,12 @@ const GET_SYMBOLS = 'symbols/GET_SYMBOLS';
 const ADD_SYMBOL = 'symbols/ADD_SYMBOL';
 const EDIT_SYMBOL = 'symbols/EDIT_SYMBOL';
 const DELETE_SYMBOL = 'symbols/DELETE_SYMBOL';
+const RESET_SYMBOLS = 'symbols/RESET_SYMBOLS';
+
+
+export const resetSymbols = () => ({
+    type: RESET_SYMBOLS
+});
 
 const getSymbols = (symbols) => ({
     type: GET_SYMBOLS,
@@ -117,6 +123,8 @@ const symbolsReducer = (state = {}, action) => {
             delete newState[symbolId];
             return newState;
         }
+        case RESET_SYMBOLS:
+            return {};
         default:
             return state;
     }

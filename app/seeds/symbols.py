@@ -107,7 +107,7 @@ def seed_symbols():
         type="Terminal",
         x_position=100,
         y_position=100,
-        text="Leave Home"
+        text="Start Home"
     )
 
     flowchart3_t2 = Symbol(
