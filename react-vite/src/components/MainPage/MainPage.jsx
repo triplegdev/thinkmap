@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { getFlowchartsThunk, createFlowchart, editFlowchart, deleteFlowchart } from '../../redux/flowcharts';
 import LeftPanel from '../LeftPanel/LeftPanel';
@@ -18,20 +18,20 @@ const MainPage = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [flowchart, setFlowchart] = useState({});
     const [title, setTitle] = useState('');
-    // const [symbol, setSymbol] = useState({});
-    // const [selectedShape, setSelectedShape] = useState(null);
     const [rightPanelVisible, setRightPanelVisible] = useState(true);
+    const isCreatingFlowchart = useRef(false); //make sure creating flowcharting only happens once
 
     useEffect(() => {
         dispatch(getFlowchartsThunk(user.id)).then(data => {
-            if (!Object.keys(data.flowcharts).length) {
+            if (!data.flowcharts.length && !isCreatingFlowchart.current) {
+                isCreatingFlowchart.current = true;
                 dispatch(createFlowchart()).then(data => {
                     setFlowchart(data);
                     setTitle(data.title);
                     setIsLoaded(true);
                 })
             }
-            else {
+            else if (data.flowcharts.length) {
                 setFlowchart(data.flowcharts[0]);
                 dispatch(getSymbolsThunk(data.flowcharts[0].id)).then(() => {
                     dispatch(getArrowsThunk(data.flowcharts[0].id)).then(() => {

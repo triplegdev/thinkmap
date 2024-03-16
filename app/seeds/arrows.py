@@ -25,7 +25,7 @@ def seed_arrows():
     flowchart2_io1 = Symbol.query.filter_by(text="Check time").first()
     flowchart2_d1 = Symbol.query.filter_by(text="Before 7 am?").first()
 
-    flowchart3_t1 = Symbol.query.filter_by(text="Start").first()
+    flowchart3_t1 = Symbol.query.filter_by(text="Start Home").first()
     flowchart3_t2 = Symbol.query.filter_by(text="Enjoy your day!").first()
     flowchart3_io1 = Symbol.query.filter_by(text="Check weather").first()
     flowchart3_d1 = Symbol.query.filter_by(text="Is it hot outside?").first()
@@ -47,18 +47,18 @@ def seed_arrows():
         Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_io1.id, symbol_to_id=flowchart2_d1.id, from_connector='mb', to_connector='mt'),
         Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_d1.id, symbol_to_id=flowchart2_p1.id, from_connector='ml', to_connector='mt'),
         Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_d1.id, symbol_to_id=flowchart2_p2.id, from_connector='mr', to_connector='mt'),
-        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_p1.id, symbol_to_id=flowchart2_t2.id, from_connector='mb', to_connector='mt'),
-        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_p2.id, symbol_to_id=flowchart2_t2.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_p1.id, symbol_to_id=flowchart2_t2.id, from_connector='mb', to_connector='ml'),
+        Arrow(flowchart_id=flowchart_id_2.id, symbol_from_id=flowchart2_p2.id, symbol_to_id=flowchart2_t2.id, from_connector='mb', to_connector='mr'),
 
-        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_t1.id, symbol_to_id=flowchart3_io1.id),
-        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_io1.id, symbol_to_id=flowchart3_d1.id),
-        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d1.id, symbol_to_id=flowchart3_p1.id),
-        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d1.id, symbol_to_id=flowchart3_p2.id),
-        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_p1.id, symbol_to_id=flowchart3_d2.id),
-        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_p2.id, symbol_to_id=flowchart3_d2.id),
-        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d2.id, symbol_to_id=flowchart3_p3.id),
-        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d2.id, symbol_to_id=flowchart3_t2.id),
-        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_p3.id, symbol_to_id=flowchart3_t2.id)
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_t1.id, symbol_to_id=flowchart3_io1.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_io1.id, symbol_to_id=flowchart3_d1.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d1.id, symbol_to_id=flowchart3_p1.id, from_connector='ml', to_connector='mr'),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d1.id, symbol_to_id=flowchart3_p2.id, from_connector='mr', to_connector='ml'),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_p1.id, symbol_to_id=flowchart3_d2.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_p2.id, symbol_to_id=flowchart3_d2.id, from_connector='mb', to_connector='mr'),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d2.id, symbol_to_id=flowchart3_p3.id, from_connector='ml', to_connector='mr'),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_d2.id, symbol_to_id=flowchart3_t2.id, from_connector='mb', to_connector='mt'),
+        Arrow(flowchart_id=flowchart_id_3.id, symbol_from_id=flowchart3_p3.id, symbol_to_id=flowchart3_t2.id, from_connector='mb', to_connector='ml')
     ]
 
     # Add arrows to the session

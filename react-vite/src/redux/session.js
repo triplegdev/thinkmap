@@ -1,3 +1,7 @@
+import { resetFlowcharts } from "./flowcharts";
+import { resetSymbols } from "./symbols";
+import { resetArrows } from "./arrows";
+
 const SET_USER = 'session/setUser';
 const REMOVE_USER = 'session/removeUser';
 
@@ -61,6 +65,9 @@ export const thunkSignup = (user) => async (dispatch) => {
 export const thunkLogout = () => async (dispatch) => {
   await fetch("/api/auth/logout");
   dispatch(removeUser());
+  dispatch(resetFlowcharts());
+  dispatch(resetSymbols());
+  dispatch(resetArrows());
 };
 
 const initialState = { user: null };
