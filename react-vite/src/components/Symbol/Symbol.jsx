@@ -85,10 +85,12 @@ const Symbol = {
                   fill: '#61C16A',
                   stroke: '#2aa336',
                   strokeWidth: 3,
+                  originX: 'center',
+                  originY: 'center',
               });
               textObj = new fabric.Textbox(text, {
-                left: x + SYMBOL_SIZE / 2,
-                top: y + SYMBOL_SIZE / 4,
+                left: x,
+                top: y,
                 originX: 'center',
                 originY: 'center',
                 fill: 'black',
@@ -100,10 +102,10 @@ const Symbol = {
               });
 
               connections = [
-                new ConnectionPoint({ left: (shape.left + (shape.width / 2)) - pointOffset, top: shape.top - pointOffset, position: 'mt' }),
-                new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top + (shape.height / 2) - pointOffset, position: 'ml' }),
-                new ConnectionPoint({ left: shape.left + shape.width - pointOffset, top: shape.top + (shape.height / 2) - pointOffset, position: 'mr'  }),
-                new ConnectionPoint({ left: (shape.left + (shape.width / 2)) - pointOffset, top: shape.top + shape.height - pointOffset, position: 'mb'  }),
+                new ConnectionPoint({ left: shape.left - (shape.width / 2) - pointOffset, top: shape.top - pointOffset, position: 'ml' }),
+                new ConnectionPoint({ left: shape.left + (shape.width / 2) - pointOffset, top: shape.top - pointOffset, position: 'mr'}),
+                new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top - (shape.height / 2) - pointOffset, position: 'mt' }),
+                new ConnectionPoint({ left: shape.left - pointOffset, top: shape.top + (shape.height / 2) - pointOffset, position: 'mb'  }),
               ];
             break;
           }
@@ -172,7 +174,9 @@ const Symbol = {
         hasControls: false,
         subTargetCheck: true,
         // perPixelTargetFind: true,
-        currentConnection: null
+        currentConnection: null,
+        height: shape.getScaledHeight(),
+        width: shape.getScaledWidth()
       });
 
 
@@ -212,7 +216,7 @@ const Symbol = {
         textForEditing.on('editing:exited', () =>{
             let newVal = textForEditing.text;
             let oldVal = text.text;
-            // console.log(textObj.text)
+            console.log(textObj)
 
           // then we check if text is changed
           if (newVal !== oldVal) {

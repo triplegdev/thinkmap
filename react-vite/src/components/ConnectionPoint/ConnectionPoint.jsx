@@ -94,39 +94,41 @@ class ConnectionPoint extends fabric.Object {
         switch(this.position) {
           case 'mt':
             x = point.x;
-            y = point.y + this.hoverCircle.radius;
+            y = point.y + 1.5; //stroke
             break;
           case 'ml':
-            x = point.x + this.hoverCircle.radius;
+            x = point.x + 1.5;
             y = point.y;
             break;
           case 'mr':
-            x = point.x - this.hoverCircle.radius
+            x = point.x - 1.5
             y = point.y;
             break;
           case 'mb':
             x = point.x
-            y = point.y - this.hoverCircle.radius;
+            y = point.y - 1.5;
             break;
         }
 
-        // if (this.position === 'mt' && group.symbolType === "Data") {
-        //   // const x2 = tl.x + group.size;
-        //   // x = (tl.x + x2) / 2;
-        //   console.log('tl', tl.x);
-        //   x = (tl.x + br.x) / 2;
-        // }
+        if (this.position === 'mt' && group.symbolType === "Data") {
+          // const x2 = tl.x + group.size;
+          // x = (tl.x + x2) / 2;
+          // console.log('tl', tl.x);
+          // x = (tl.x + br.x) / 2;
+          x = x + 2;
+        }
         if (this.position === 'ml' && group.symbolType === "Data") {
           x = tl.x + (group.size / 8);
         }
         else if (this.position === 'mr' && group.symbolType === "Data") {
           x = tl.x + (group.size + (group.size * .125));
         }
-        // else if (this.position === 'mb' && group.symbolType === "Data") {
-        //   // const x1 = tl.x + (group.size / 4);
-        //   // x = (x1 + br.x) / 2;
-        //   x = (tl.x + br.x) / 2;
-        // }
+        else if (this.position === 'mb' && group.symbolType === "Data") {
+          // const x1 = tl.x + (group.size / 4);
+          // x = (x1 + br.x) / 2;
+          // x = (tl.x + br.x) / 2;
+          x = x + 2;
+        }
 
         const startingPoint = {x, y};
 
