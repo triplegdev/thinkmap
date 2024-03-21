@@ -171,8 +171,8 @@ const GridTool = ({ arrows, symbols, onEditSymbol, onDeleteSymbol, onCreateArrow
             const { x, y } = activeObject.getCenterPoint();
             const textObj = activeObject.getObjects().find(obj => obj.type === 'textbox');
             const payload = {
-                x_position: x,
-                y_position: y,
+                x_position: Math.round(x),
+                y_position: Math.round(y),
                 text: textObj.text,
                 type: activeObject.symbolType
             }
@@ -193,14 +193,14 @@ const GridTool = ({ arrows, symbols, onEditSymbol, onDeleteSymbol, onCreateArrow
             connections.forEach(connection => {
                 if (connection.fromConnected) {
                     connection.line.set({
-                        x1: activeObject.left + connection.left,
-                        y1: activeObject.top + connection.top
+                        x1: activeObject.left + connection.left + 4, // added points to center
+                        y1: activeObject.top + connection.top + 4
                     });
                 }
                 else if (connection.toConnected) {
                     connection.line.set({
-                        x2: activeObject.left + connection.left,
-                        y2: activeObject.top + connection.top
+                        x2: activeObject.left + connection.left + 4,
+                        y2: activeObject.top + connection.top + 4
                     });
                 }
             });
