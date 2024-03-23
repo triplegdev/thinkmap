@@ -27,9 +27,23 @@ To install Flowchartify locally, follow these steps:
 
 1. Clone the repository:
 
-```bash
+```sh
 $ git clone https://github.com/triplegdev/thinkmap.git
 $ cd thinkmap
+
+$ pip install -r requirements.txt
+
+$ cd react-vite
+$ npm install
+```
+
+## Usage
+
+```sh
+$ flask run
+
+$ cd react-vite
+$ npm run dev
 ```
 
 ## License
